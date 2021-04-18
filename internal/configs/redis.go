@@ -3,6 +3,7 @@ package config
 import (
 	"strconv"
 
+	"github.com/RediSearch/redisearch-go/redisearch"
 	"github.com/go-redis/redis/v8"
 )
 
@@ -19,14 +20,19 @@ func NewRedisClient() *redis.Client {
 	var redisPassword string
 	var redisDB int
 	var err error
-	redisAddr = GetEnv(envRedisAddr, defaultRedisAddr)
+
 	redisPassword = GetEnv(envRedisPassword, "")
 	if redisDB, err = strconv.Atoi(GetEnv(envRedisDatabase, strconv.Itoa(defaultRedisDB))); err != nil {
-		redisDB = defaultTimeoutSeconds
+		redisDB = defaultRedisDB
 	}
 	return redis.NewClient(&redis.Options{
 		Addr:     redisAddr,
 		Password: redisPassword,
 		DB:       redisDB,
 	})
+}
+
+func NewRediSearchClient(indexName string) *redisearch.Client {
+	redisAddr := GetEnv(envRedisAddr, defaultRedisAddr)
+	return redisearch.NewClient(redisAddr, indexName)
 }

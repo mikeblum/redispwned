@@ -13,11 +13,7 @@ const (
 	defaultTimeoutSeconds = 10
 )
 
-type ShodanClient struct {
-	client *http.Client
-}
-
-func NewShodanClient() *ShodanClient {
+func NewHTTPClient() *http.Client {
 	t := http.DefaultTransport.(*http.Transport).Clone()
 	var err error
 	if maxConn, err := strconv.Atoi(GetEnv(envMaxConn, strconv.Itoa(defaultMaxConn))); err == nil {
@@ -29,10 +25,8 @@ func NewShodanClient() *ShodanClient {
 	if timeoutSeconds, err = strconv.Atoi(GetEnv(envTimeoutSeconds, strconv.Itoa(defaultTimeoutSeconds))); err != nil {
 		timeoutSeconds = defaultTimeoutSeconds
 	}
-	return &ShodanClient{
-		client: &http.Client{
-			Timeout:   time.Duration(timeoutSeconds) * time.Second,
-			Transport: t,
-		},
+	return &http.Client{
+		Timeout:   time.Duration(timeoutSeconds) * time.Second,
+		Transport: t,
 	}
 }
