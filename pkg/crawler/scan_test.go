@@ -1,6 +1,7 @@
 package crawler
 
 import (
+	"encoding/json"
 	"net"
 	"testing"
 
@@ -24,12 +25,19 @@ func (suite *ScanTestSuite) TestNewScanner() {
 }
 
 func (suite *ScanTestSuite) TestScanLocalhost() {
-	// assert := assert.New(suite.T())
-	target := &zgrab2.ScanTarget{
-		IP:   net.ParseIP("127.0.0.1"),
+	assert := assert.New(suite.T())
+	localhost := net.ParseIP("127.0.0.1")
+	assert.NotNil(localhost)
+	target := zgrab2.ScanTarget{
+		IP:   localhost,
 		Port: suite.scanner.RedisPort(),
 	}
-	suite.scanner.Scan(*target)
+	status, response, err := suite.scanner.Scan(target)
+	assert.Nil(err)
+	assert.Equal(zgrab2.SCAN_SUCCESS, status)
+	data, err := json.Marshal(response)
+	assert.Nil(err)
+	assert.True(len(data) > 0)
 }
 
 func TestScanTestSuite(t *testing.T) {

@@ -2,6 +2,8 @@
     "cSpell.words": [
         "haveibeenredised",
         "redisearch",
-        "shodan"
-    ]
+        "shodan",
+        "zgrab",
+    ],
+    "cSpell.diagnosticLevel": "Hint",
 }
