@@ -16,5 +16,5 @@ func main() {
 	shodanClient := shodan.NewShodanClient()
 	shodanClient.ImportShodanData(shodan.DataJSONPath, redisClient)
 	shodanClient.ServersByCountry()
-	// shodanClient.ServersByVersion()
+	shodanClient.ServersByVersion()
 }
