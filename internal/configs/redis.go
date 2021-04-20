@@ -12,19 +12,40 @@ const (
 	defaultRedisAddr = "127.0.0.1:6379"
 	envRedisPassword = "REDIS_PASSWORD"
 	envRedisDatabase = "REDIS_DB"
-	defaultRedisDB   = 0
+	DefaultRedisDB   = 0
+	TestRedisDB      = 1
 )
 
-func NewRedisClient() *redis.Client {
+func NewDefaultRedisClient() *redis.Client {
 	var redisAddr string
 	var redisPassword string
-	var redisDB int
+	var redisDB int = DefaultRedisDB
 	var err error
 
-	redisPassword = GetEnv(envRedisPassword, "")
-	if redisDB, err = strconv.Atoi(GetEnv(envRedisDatabase, strconv.Itoa(defaultRedisDB))); err != nil {
-		redisDB = defaultRedisDB
+	if redisDB, err = strconv.Atoi(GetEnv(envRedisDatabase, strconv.Itoa(DefaultRedisDB))); err != nil {
+		redisDB = DefaultRedisDB
 	}
+	return redis.NewClient(&redis.Options{
+		Addr:     redisAddr,
+		Password: redisPassword,
+		DB:       redisDB,
+	})
+}
+
+func NewRedisClientTest() *redis.Client {
+	var redisAddr string
+	var redisDB int = TestRedisDB
+	redisPassword := GetEnv(envRedisPassword, "")
+	return redis.NewClient(&redis.Options{
+		Addr:     redisAddr,
+		Password: redisPassword,
+		DB:       redisDB,
+	})
+}
+
+func newRedisClient(redisDB int) *redis.Client {
+	var redisAddr string
+	redisPassword := GetEnv(envRedisPassword, "")
 	return redis.NewClient(&redis.Options{
 		Addr:     redisAddr,
 		Password: redisPassword,

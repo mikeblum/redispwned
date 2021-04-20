@@ -19,10 +19,15 @@ type ImportTestSuite struct {
 }
 
 func (suite *ImportTestSuite) SetupTest() {
-	suite.client = config.NewRedisClient()
+	// use 1 in tests, 0 in production
+	suite.client = config.NewRedisClientTest()
 	// !!DANGER!! flush db before each test
 	response := suite.client.FlushDB(context.TODO())
 	suite.err = response.Err()
+}
+
+func (suite *ImportTestSuite) TearDownAllSuite() {
+	suite.client.FlushDB(context.TODO())
 }
 
 func TestImportTestSuite(t *testing.T) {
@@ -32,9 +37,8 @@ func TestImportTestSuite(t *testing.T) {
 func (suite *ImportTestSuite) TestImportShodanDataSerialization() {
 	assert := assert.New(suite.T())
 	s := NewShodanClient()
-	redisClient := config.NewRedisClient()
 	assert.NotNil(s)
-	err := s.ImportShodanData(shodanDataJSONTest, redisClient)
+	err := s.ImportShodanData(shodanDataJSONTest, suite.client)
 	assert.Nil(err)
 }
 
@@ -45,7 +49,7 @@ func (suite *ImportTestSuite) TestImportShodanDataHashIndexingFailures() {
 	// The requirement for adding support for partially indexing and blocking is captured here: #1455
 	assert := assert.New(suite.T())
 	s := NewShodanClient()
-	redisClient := config.NewRedisClient()
+	redisClient := config.NewRedisClientTest()
 	assert.NotNil(s)
 	err := s.ImportShodanData("../../"+DataJSONPath, redisClient)
 	assert.Nil(err)

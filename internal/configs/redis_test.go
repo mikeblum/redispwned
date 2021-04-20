@@ -11,5 +11,12 @@ func TestRedisDefaults(t *testing.T) {
 	expectedAddr := "127.0.0.1:6379"
 	assert.Equal(expectedAddr, defaultRedisAddr)
 	expectedDB := 0
-	assert.Equal(expectedDB, defaultRedisDB)
+	assert.Equal(expectedDB, DefaultRedisDB)
+}
+
+func TestRedisDBConfigurable(t *testing.T) {
+	assert := assert.New(t)
+	expectedDB := 1
+	client := newRedisClient(expectedDB)
+	assert.Equal(expectedDB, client.Options().DB)
 }
