@@ -21,11 +21,8 @@ func (rs *RedisScanner) RedisPort() *uint {
 }
 
 // https://github.com/zmap/zgrab2/blob/master/modules/redis.go
-func init() {
-	zredis.RegisterModule()
-}
-
 func NewScanner() *RedisScanner {
+	zredis.RegisterModule()
 	mod := zgrab2.GetModule(moduleType).(*zredis.Module)
 	scan := mod.NewScanner().(*zredis.Scanner)
 	// configure flags

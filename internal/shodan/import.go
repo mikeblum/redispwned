@@ -12,7 +12,9 @@ import (
 	"time"
 
 	"github.com/RediSearch/redisearch-go/redisearch"
+
 	"github.com/go-redis/redis/v8"
+
 	config "github.com/mikeblum/haveibeenredised/internal/configs"
 )
 
@@ -26,8 +28,9 @@ func (s *ShodanClient) ImportShodanData(path string, redisClient *redis.Client) 
 	s.buildIndex()
 	ctx := context.TODO()
 	var err error
-	dump, err := s.LoadFile(path)
+	dump, err := os.Open(path)
 	if err != nil {
+		s.log.Error("Failed to load Shodan export data")
 		return err
 	}
 	reader := bufio.NewReader(dump)
@@ -45,18 +48,13 @@ func (s *ShodanClient) ImportShodanData(path string, redisClient *redis.Client) 
 		meta.ToHSet(ctx, pipe)
 		numRecords++
 	}
-	results, _ := pipe.Exec(ctx)
+	results, err := pipe.Exec(ctx)
+	if err != nil {
+		s.log.Fatal("Failed to import Shodan data", err)
+	}
 	s.log.Infof("Loaded %d / %d Shodan records", numRecords, len(results))
 	dump.Close()
 	return s.awaitIndex()
-}
-
-func (s *ShodanClient) LoadFile(path string) (*os.File, error) {
-	dump, err := os.Open(path)
-	if err != nil {
-		s.log.Error("Failed to load Shodan export data")
-	}
-	return dump, err
 }
 
 func (s *ShodanClient) buildIndex() error {
@@ -94,7 +92,7 @@ func (s *ShodanClient) awaitIndex() error {
 		info, err = s.idx.Info()
 	}
 	// hash_indexing_failures missing from *redisearch.IndexInfo
-	rds := config.NewRedisClient()
+	rds := config.NewDefaultRedisClient()
 	res, _ := rds.Do(context.TODO(), "FT.INFO", idxShodanRedisVersionByCityCountryGeo).Result()
 	props := res.([]interface{})
 	for i, itr := range props {
