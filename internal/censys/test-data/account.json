@@ -1,0 +1,11 @@
+{
+    "login": "john_doe",
+    "email": "john@example.com",
+    "first_login": "2018-01-22 15:04:05",
+    "last_login": "2018-02-15 16:17:18",
+    "quota": {
+        "used": 10,
+        "resets_at": "2018-02-22 15:05:04",
+        "allowance": 250
+    }
+}
