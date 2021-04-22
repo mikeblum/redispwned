@@ -22,16 +22,46 @@ type Request struct {
 type Response struct {
 	Status  string   `json:"status"`
 	Results []Result `json:"results"`
-	Meta    Meta     `json:"meta"`
+	Meta    Meta     `json:"metadata"`
 }
 
 type Result struct {
-	IP net.IP `json:"ip"`
+	IP       net.IP   `json:"ip"`
+	Location Location `json:"location"`
+	ASN      ASN      `json:"asn"`
+	Redis    Redis    `json:"6379"`
+}
+
+type Redis struct {
+	Service Service `json:"redis"`
+}
+
+type Service struct {
+	Banner Banner `json:"banner"`
+}
+
+type Banner struct {
+	PingResponse  string `json:"ping_response"`
+	Version       string `json:"version"`
+	Mode          string `json:"mode"`
+	UptimeSeconds int    `json:"uptime_in_seconds"`
 }
 
 type Location struct {
-	Country   string  `json:"country"`
-	Longitude float64 `json:"longitude"`
+	City        string  `json:"city"`
+	Province    string  `json:"province"`
+	Country     string  `json:"country"`
+	CountryCode string  `json:"country_code"`
+	Latitude    float64 `json:"latitude"`
+	Longitude   float64 `json:"longitude"`
+}
+
+type ASN struct {
+	ASN         int       `json:"asn"`
+	Description string    `json:"description"`
+	CIDR        net.IPNet `json:"routed_prefix"`
+	CountryCode string    `json:"country_code"`
+	Name        string    `json:"name"`
 }
 
 type Meta struct {

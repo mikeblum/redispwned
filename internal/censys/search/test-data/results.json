@@ -2,29 +2,90 @@
     "status": "ok",
     "results": [
         {
-            "ip": "153.126.165.74",
-            "location": {
-                "country": "Japan",
-                "longitude": 139.6895,
-                "registered_country": "Japan",
-                "registered_country_code": "JP",
-                "country_code": "JP",
-                "latitude": 35.6897,
-                "timezone": "Asia/Tokyo",
-                "continent": "Asia"
+            "updated_at": "2021-04-19T05:45:35+00:00",
+            "6379": {
+                "redis": {
+                    "banner": {
+                        "ping_response": "PONG"
+                    }
+                }
             },
-            "protocols": [
-                "443/https",
-                "3306/mysql",
-                "6379/redis",
-                "80/http"
-            ]
+            "ip": "3.249.24.128",
+            "autonomous_system": {
+                "name": "AMAZON-02",
+                "routed_prefix": "3.248.0.0/13",
+                "asn": 16509,
+                "country_code": "US",
+                "description": "AMAZON-02"
+            },
+            "location": {
+                "province": "Leinster",
+                "city": "Dublin",
+                "country": "Ireland",
+                "longitude": -6.2591,
+                "country_code": "IE",
+                "latitude": 53.3382
+            }
+        },
+        {
+            "updated_at": "2021-04-21T05:28:18+00:00",
+            "6379": {
+                "redis": {
+                    "banner": {
+                        "ping_response": "(Error: NOAUTH Authentication required.)"
+                    }
+                }
+            },
+            "ip": "144.34.173.131",
+            "autonomous_system": {
+                "name": "IT7NET",
+                "routed_prefix": "144.34.160.0/19",
+                "asn": 25820,
+                "country_code": "CA",
+                "description": "IT7NET"
+            },
+            "location": {
+                "province": "California",
+                "city": "Los Angeles",
+                "country": "United States",
+                "longitude": -118.2529,
+                "country_code": "US",
+                "latitude": 34.0485
+            }
+        },
+        {
+            "updated_at": "2021-04-21T05:31:07+00:00",
+            "6379": {
+                "redis": {
+                    "banner": {
+                        "ping_response": "PONG",
+                        "version": "6.0.1",
+                        "uptime_in_seconds": 13669748,
+                        "mode": "standalone"
+                    }
+                }
+            },
+            "ip": "15.185.106.245",
+            "autonomous_system": {
+                "name": "AMAZON-02",
+                "routed_prefix": "15.185.0.0/16",
+                "asn": 16509,
+                "country_code": "US",
+                "description": "AMAZON-02"
+            },
+            "location": {
+                "latitude": 26.0333,
+                "country": "Bahrain",
+                "country_code": "BH",
+                "longitude": 50.55,
+                "city": "Bahrain"
+            }
         }
     ],
     "metadata": {
         "count": 90905,
-        "query": "protocols: '6379/redis'",
-        "backend_time": 231,
+        "query": "protocols: \"6379/redis\" OR tags.raw: \"redis\"",
+        "backend_time": 79,
         "page": 1,
         "pages": 910
     }

@@ -5,7 +5,6 @@ import (
 	"encoding/json"
 	"io"
 	"os"
-	"strings"
 	"testing"
 
 	censys "github.com/mikeblum/haveibeenredised/internal/censys"
@@ -59,14 +58,49 @@ func (suite *SearchTestSuite) TestSearchResultSerialization() error {
 		}
 	}
 	assert.NotNil(response)
+	expectedResults := 3
+	assert.Equal(expectedResults, len(response.Results))
+	expectedTotalPages := 910
+	assert.Equal(expectedTotalPages, response.Meta.NumPages)
+	expectedTotalResults := 90905
+	assert.Equal(expectedTotalResults, response.Meta.Count)
 	return nil
 }
 
-func (suite *SearchTestSuite) TestSearchRedisRequest() {
-	assert := asserts.New(suite.T())
-	response, err := Redis(suite.client)
-	assert.Nil(err)
-	assert.NotNil(response)
-	assert.True(strings.EqualFold("ok", response.Status))
-	assert.True(len(response.Results) > 0)
+func mockResponse() Response {
+	return Response{
+		Results: []Result{
+			{
+				Redis: Redis{
+					Service: Service{
+						Banner: Banner{
+							PingResponse: "PONG",
+						},
+					},
+				},
+			},
+		},
+	}
 }
+
+func (suite *SearchTestSuite) TestPingResponsePONG() {
+	assert := asserts.New(suite.T())
+	response := mockResponse()
+	assert.NotNil(response)
+}
+
+func (suite *SearchTestSuite) TestPingResponseNOAUTH() {
+	assert := asserts.New(suite.T())
+	response := mockResponse()
+	response.Results[0].Redis.Service.Banner.PingResponse = "(Error: NOAUTH Authentication required.)"
+	assert.NotNil(response)
+}
+
+// func (suite *SearchTestSuite) TestSearchRedisRequestIntegration() {
+// 	assert := asserts.New(suite.T())
+// 	response, err := RedisQuery(suite.client)
+// 	assert.Nil(err)
+// 	assert.NotNil(response)
+// 	assert.True(strings.EqualFold("ok", response.Status))
+// 	assert.True(len(response.Results) > 0)
+// }
