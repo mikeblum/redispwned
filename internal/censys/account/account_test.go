@@ -1,4 +1,4 @@
-package censys
+package account
 
 import (
 	"bufio"
@@ -7,6 +7,7 @@ import (
 	"os"
 	"testing"
 
+	censys "github.com/mikeblum/haveibeenredised/internal/censys"
 	config "github.com/mikeblum/haveibeenredised/internal/configs"
 	"github.com/sirupsen/logrus"
 	asserts "github.com/stretchr/testify/assert"
@@ -17,17 +18,24 @@ const accountJSON = "test-data/account.json"
 
 type AccountTestSuite struct {
 	suites.Suite
-	client *Client
+	client *censys.Client
+	cfg    *config.AppConfig
 	log    *logrus.Entry
 }
 
 func (suite *AccountTestSuite) SetupTest() {
-	suite.client = NewClient()
+	suite.cfg = config.NewConfig()
+	suite.client = censys.NewClient()
 	suite.log = config.NewLog()
 }
 
 func TestAccountTestSuite(t *testing.T) {
 	suites.Run(t, new(AccountTestSuite))
+}
+
+func (suite *AccountTestSuite) TestAccountConfig() {
+	assert := asserts.New(suite.T())
+	assert.NotNil(suite.cfg)
 }
 
 func (suite *AccountTestSuite) TestAccountSerialization() error {
@@ -54,7 +62,13 @@ func (suite *AccountTestSuite) TestAccountSerialization() error {
 
 func (suite *AccountTestSuite) TestAccountRequest() {
 	assert := asserts.New(suite.T())
-	account, err := suite.client.GetAccount()
+	account, err := GetAccount(suite.client)
 	assert.Nil(err)
 	assert.NotNil(account)
+
+	data, err := json.Marshal(account)
+	assert.Nil(err)
+	suite.log.Info(string(data))
+	// check quota and warn if depleted
+	assert.True(account.Quota.Used < account.Quota.Allowance)
 }

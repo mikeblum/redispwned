@@ -15,7 +15,7 @@ type ScanTestSuite struct {
 	scanner *RedisScanner
 }
 
-func (suite *ScanTestSuite) SetupTest() {
+func (suite *ScanTestSuite) SetupSuite() {
 	var err error
 	suite.scanner, err = NewScanner()
 	assert := asserts.New(suite.T())

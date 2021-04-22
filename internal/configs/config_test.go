@@ -8,7 +8,6 @@ import (
 
 func TestNewConfig(t *testing.T) {
 	assert := asserts.New(t)
-	cfg, err := NewConfig()
-	assert.Nil(err)
+	cfg := NewConfig()
 	assert.NotNil(cfg)
 }

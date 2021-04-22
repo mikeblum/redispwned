@@ -2,33 +2,65 @@ package config
 
 import (
 	"os"
+	"strings"
 
 	"github.com/sirupsen/logrus"
 	"github.com/spf13/viper"
 )
 
-func NewConfig() (*viper.Viper, error) {
-	log := NewLog()
+const envLogLevel = "LOG_LEVEL"
+
+var defaultLogLevel = logrus.InfoLevel.String()
+
+const envLogFormat = "LOG_FORMAT"
+
+var jsonLogFormat = "JSON"
+
+type AppConfig struct {
+	*viper.Viper
+}
+
+func NewConfig() *AppConfig {
 	config := viper.New()
 	config.SetConfigName("config")
 	config.SetConfigType("env")
 	config.AddConfigPath(".")
+	config.AddConfigPath("..")
 	config.AddConfigPath("../..")
-	err := config.ReadInConfig()
-	if err != nil {
-		log.Warn("Fatal error config file: ", err)
+	config.AddConfigPath("../../..")
+	config.AutomaticEnv()
+	_ = config.ReadInConfig()
+	return &AppConfig{
+		config,
 	}
-	return config, err
 }
 
 func NewLog() *logrus.Entry {
 	var log = logrus.New()
-	log.SetFormatter(&logrus.JSONFormatter{
-		DisableHTMLEscape: true,
-	})
+	var cfg = NewConfig()
+	if val, ok := HasEnv(cfg.GetString(envLogFormat)); ok {
+		switch strings.ToUpper(val) {
+		case jsonLogFormat:
+			log.SetFormatter(&logrus.JSONFormatter{
+				DisableHTMLEscape: true,
+			})
+		default:
+			log.SetFormatter(&logrus.TextFormatter{})
+		}
+	}
 	log.SetOutput(os.Stdout)
-	log.SetLevel(logrus.InfoLevel)
+	if val, ok := HasEnv(cfg.GetString(envLogLevel)); ok {
+		level, err := logrus.ParseLevel(val)
+		if err != nil {
+			level, _ = logrus.ParseLevel(defaultLogLevel)
+		}
+		log.SetLevel(level)
+	}
 	return log.WithFields(logrus.Fields{})
+}
+
+func HasEnv(env string) (string, bool) {
+	return env, len(env) > 0
 }
 
 func GetEnv(envVar, defaultValue string) string {

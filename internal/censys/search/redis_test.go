@@ -1,0 +1,72 @@
+package search
+
+import (
+	"bufio"
+	"encoding/json"
+	"io"
+	"os"
+	"strings"
+	"testing"
+
+	censys "github.com/mikeblum/haveibeenredised/internal/censys"
+	config "github.com/mikeblum/haveibeenredised/internal/configs"
+	"github.com/sirupsen/logrus"
+	asserts "github.com/stretchr/testify/assert"
+	suites "github.com/stretchr/testify/suite"
+)
+
+const searchResultsJSON = "test-data/results.json"
+
+type SearchTestSuite struct {
+	suites.Suite
+	client *censys.Client
+	cfg    *config.AppConfig
+	log    *logrus.Entry
+}
+
+func (suite *SearchTestSuite) SetupTest() {
+	suite.cfg = config.NewConfig()
+	suite.client = censys.NewClient()
+	suite.log = config.NewLog()
+}
+
+func TestSearchTestSuite(t *testing.T) {
+	suites.Run(t, new(SearchTestSuite))
+}
+
+func (suite *SearchTestSuite) TestSearchConfig() {
+	assert := asserts.New(suite.T())
+	assert.NotNil(suite.cfg)
+}
+
+func (suite *SearchTestSuite) TestSearchResultSerialization() error {
+	assert := asserts.New(suite.T())
+	var response Response
+	dump, err := os.Open(searchResultsJSON)
+	if err != nil {
+		suite.log.Error("Failed to load search results")
+		return err
+	}
+	reader := bufio.NewReader(dump)
+	decoder := json.NewDecoder(reader)
+	for {
+		if err = decoder.Decode(&response); err == io.EOF {
+			break
+		} else if err != nil {
+			suite.log.Error("Error reading search results: ", err)
+			assert.Nil(err)
+			break
+		}
+	}
+	assert.NotNil(response)
+	return nil
+}
+
+func (suite *SearchTestSuite) TestSearchRedisRequest() {
+	assert := asserts.New(suite.T())
+	response, err := Redis(suite.client)
+	assert.Nil(err)
+	assert.NotNil(response)
+	assert.True(strings.EqualFold("ok", response.Status))
+	assert.True(len(response.Results) > 0)
+}

@@ -1,0 +1,31 @@
+{
+    "status": "ok",
+    "results": [
+        {
+            "ip": "153.126.165.74",
+            "location": {
+                "country": "Japan",
+                "longitude": 139.6895,
+                "registered_country": "Japan",
+                "registered_country_code": "JP",
+                "country_code": "JP",
+                "latitude": 35.6897,
+                "timezone": "Asia/Tokyo",
+                "continent": "Asia"
+            },
+            "protocols": [
+                "443/https",
+                "3306/mysql",
+                "6379/redis",
+                "80/http"
+            ]
+        }
+    ],
+    "metadata": {
+        "count": 90905,
+        "query": "protocols: '6379/redis'",
+        "backend_time": 231,
+        "page": 1,
+        "pages": 910
+    }
+}
