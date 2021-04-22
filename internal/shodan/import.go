@@ -24,10 +24,13 @@ const attrHashIndexingFailures = "hash_indexing_failures"
 
 const idxShodanRedisVersionByCityCountryGeo = "idx:shodan-redis-version-by-country-city-geo"
 
-func (s *ShodanClient) ImportShodanData(path string, redisClient *redis.Client) error {
-	s.buildIndex()
+func (s *Client) ImportShodanData(path string, redisClient *redis.Client) error {
+	err := s.buildIndex()
+	if err != nil {
+		s.log.Error("Failed to build index")
+		return err
+	}
 	ctx := context.TODO()
-	var err error
 	dump, err := os.Open(path)
 	if err != nil {
 		s.log.Error("Failed to load Shodan export data")
@@ -57,7 +60,7 @@ func (s *ShodanClient) ImportShodanData(path string, redisClient *redis.Client) 
 	return s.awaitIndex()
 }
 
-func (s *ShodanClient) buildIndex() error {
+func (s *Client) buildIndex() error {
 	s.idx = config.NewRediSearchClient(idxShodanRedisVersionByCityCountryGeo)
 
 	// RediSearch will not index hashes whose fields do not match an existing index schema.
@@ -70,7 +73,10 @@ func (s *ShodanClient) buildIndex() error {
 		AddField(redisearch.NewTextFieldOptions("city", redisearch.TextFieldOptions{Sortable: true})).
 		AddField(redisearch.NewTextFieldOptions("country", redisearch.TextFieldOptions{Sortable: true}))
 	// AddField(redisearch.NewGeoField("geo")) missing for some entries
-	s.idx.DropIndex(true)
+	err := s.idx.DropIndex(true)
+	if err != nil {
+		return err
+	}
 
 	// IndexDefinition is available for RediSearch 2.0+
 	// Create a index definition for automatic indexing on Hash updates.
@@ -78,10 +84,9 @@ func (s *ShodanClient) buildIndex() error {
 
 	// Add the Index Definition
 	return s.idx.CreateIndexWithIndexDefinition(schema, indexDefinition)
-
 }
 
-func (s *ShodanClient) awaitIndex() error {
+func (s *Client) awaitIndex() error {
 	// Wait for all documents to be indexed
 	var info *redisearch.IndexInfo
 	var err error

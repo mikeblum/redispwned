@@ -5,27 +5,30 @@ import (
 	"net"
 	"testing"
 
-	"github.com/stretchr/testify/assert"
-	"github.com/stretchr/testify/suite"
+	asserts "github.com/stretchr/testify/assert"
+	suites "github.com/stretchr/testify/suite"
 	"github.com/zmap/zgrab2"
 )
 
 type ScanTestSuite struct {
-	suite.Suite
+	suites.Suite
 	scanner *RedisScanner
 }
 
 func (suite *ScanTestSuite) SetupTest() {
-	suite.scanner = NewScanner()
+	var err error
+	suite.scanner, err = NewScanner()
+	assert := asserts.New(suite.T())
+	assert.Nil(err)
 }
 
 func (suite *ScanTestSuite) TestNewScanner() {
-	assert := assert.New(suite.T())
+	assert := asserts.New(suite.T())
 	assert.NotNil(suite.scanner)
 }
 
 func (suite *ScanTestSuite) TestScanLocalhost() {
-	assert := assert.New(suite.T())
+	assert := asserts.New(suite.T())
 	localhost := net.ParseIP("127.0.0.1")
 	assert.NotNil(localhost)
 	target := zgrab2.ScanTarget{
@@ -41,5 +44,5 @@ func (suite *ScanTestSuite) TestScanLocalhost() {
 }
 
 func TestScanTestSuite(t *testing.T) {
-	suite.Run(t, new(ScanTestSuite))
+	suites.Run(t, new(ScanTestSuite))
 }

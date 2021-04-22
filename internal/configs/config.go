@@ -31,7 +31,7 @@ func NewLog() *logrus.Entry {
 	return log.WithFields(logrus.Fields{})
 }
 
-func GetEnv(envVar string, defaultValue string) string {
+func GetEnv(envVar, defaultValue string) string {
 	if val, ok := os.LookupEnv(envVar); ok {
 		return val
 	}

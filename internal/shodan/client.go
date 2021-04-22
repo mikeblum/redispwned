@@ -8,14 +8,14 @@ import (
 	"github.com/sirupsen/logrus"
 )
 
-type ShodanClient struct {
+type Client struct {
 	client *http.Client
 	idx    *redisearch.Client
 	log    *logrus.Entry
 }
 
-func NewShodanClient() *ShodanClient {
-	return &ShodanClient{
+func NewClient() *Client {
+	return &Client{
 		client: config.NewHTTPClient(),
 		log:    config.NewLog(),
 	}

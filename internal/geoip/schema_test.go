@@ -7,12 +7,12 @@ import (
 
 	"github.com/go-redis/redis/v8"
 	config "github.com/mikeblum/haveibeenredised/internal/configs"
-	"github.com/stretchr/testify/assert"
-	"github.com/stretchr/testify/suite"
+	asserts "github.com/stretchr/testify/assert"
+	suites "github.com/stretchr/testify/suite"
 )
 
 type GeoIPTestSuite struct {
-	suite.Suite
+	suites.Suite
 	client *redis.Client
 	err    error
 }
@@ -30,11 +30,11 @@ func (suite *GeoIPTestSuite) TearDownAllSuite() {
 }
 
 func TestGeoIPTestSuite(t *testing.T) {
-	suite.Run(t, new(GeoIPTestSuite))
+	suites.Run(t, new(GeoIPTestSuite))
 }
 
 func (suite *GeoIPTestSuite) TestImportGeoCIDRToInt() {
-	assert := assert.New(suite.T())
+	assert := asserts.New(suite.T())
 	googleDNS := "8.8.8.8/18"
 	broadcast, network, err := net.ParseCIDR(googleDNS)
 	assert.Nil(err)
@@ -55,7 +55,7 @@ func (suite *GeoIPTestSuite) TestImportGeoCIDRToInt() {
 }
 
 func (suite *GeoIPTestSuite) TestImportGeoIPV4ToInt() {
-	assert := assert.New(suite.T())
+	assert := asserts.New(suite.T())
 	ipv4 := "172.31.40.236"
 	ipAddr := net.ParseIP(ipv4)
 	// private AWS EC2 IP
@@ -75,7 +75,7 @@ func (suite *GeoIPTestSuite) TestImportGeoIPV4ToInt() {
 }
 
 func (suite *GeoIPTestSuite) TestImportGeoIpValidCoordinates() {
-	assert := assert.New(suite.T())
+	assert := asserts.New(suite.T())
 	var lon float64
 	var lat float64
 	var err error
@@ -89,7 +89,7 @@ func (suite *GeoIPTestSuite) TestImportGeoIpValidCoordinates() {
 }
 
 func (suite *GeoIPTestSuite) TestImportGeoIpInvalidCoordinates() {
-	assert := assert.New(suite.T())
+	assert := asserts.New(suite.T())
 	// Failed to import GeoIP data ERR invalid longitude,latitude pair 6252001.000000,1861060.000000
 	var lon float64 = 6252001.000000
 	var lat float64 = 1861060.000000

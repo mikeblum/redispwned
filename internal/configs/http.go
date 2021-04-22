@@ -15,8 +15,9 @@ const (
 
 func NewHTTPClient() *http.Client {
 	t := http.DefaultTransport.(*http.Transport).Clone()
+	var maxConn int
 	var err error
-	if maxConn, err := strconv.Atoi(GetEnv(envMaxConn, strconv.Itoa(defaultMaxConn))); err == nil {
+	if maxConn, err = strconv.Atoi(GetEnv(envMaxConn, strconv.Itoa(defaultMaxConn))); err == nil {
 		t.MaxIdleConns = maxConn
 		t.MaxConnsPerHost = maxConn
 		t.MaxIdleConnsPerHost = maxConn

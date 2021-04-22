@@ -6,14 +6,14 @@ import (
 
 	"github.com/go-redis/redis/v8"
 	config "github.com/mikeblum/haveibeenredised/internal/configs"
-	"github.com/stretchr/testify/assert"
-	"github.com/stretchr/testify/suite"
+	asserts "github.com/stretchr/testify/assert"
+	suites "github.com/stretchr/testify/suite"
 )
 
 const shodanDataJSONTest = "test-data/shodan.json"
 
 type ImportTestSuite struct {
-	suite.Suite
+	suites.Suite
 	client *redis.Client
 	err    error
 }
@@ -31,12 +31,12 @@ func (suite *ImportTestSuite) TearDownAllSuite() {
 }
 
 func TestImportTestSuite(t *testing.T) {
-	suite.Run(t, new(ImportTestSuite))
+	suites.Run(t, new(ImportTestSuite))
 }
 
 func (suite *ImportTestSuite) TestImportShodanDataSerialization() {
-	assert := assert.New(suite.T())
-	s := NewShodanClient()
+	assert := asserts.New(suite.T())
+	s := NewClient()
 	assert.NotNil(s)
 	err := s.ImportShodanData(shodanDataJSONTest, suite.client)
 	assert.Nil(err)
@@ -47,8 +47,8 @@ func (suite *ImportTestSuite) TestImportShodanDataHashIndexingFailures() {
 	// RediSearch will not index hashes whose fields do not match an existing index schema.
 	// You can see the number of hashes not indexed using FT.INFO - hash_indexing_failures.
 	// The requirement for adding support for partially indexing and blocking is captured here: #1455
-	assert := assert.New(suite.T())
-	s := NewShodanClient()
+	assert := asserts.New(suite.T())
+	s := NewClient()
 	redisClient := config.NewRedisClientTest()
 	assert.NotNil(s)
 	err := s.ImportShodanData("../../"+DataJSONPath, redisClient)

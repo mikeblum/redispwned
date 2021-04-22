@@ -5,12 +5,12 @@ import (
 	"github.com/sirupsen/logrus"
 )
 
-type GeoIPClient struct {
+type Client struct {
 	log *logrus.Entry
 }
 
-func NewGeoIPClient() *GeoIPClient {
-	return &GeoIPClient{
+func NewClient() *Client {
+	return &Client{
 		log: config.NewLog(),
 	}
 }

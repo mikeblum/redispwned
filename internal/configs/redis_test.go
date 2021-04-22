@@ -3,11 +3,11 @@ package config
 import (
 	"testing"
 
-	"github.com/stretchr/testify/assert"
+	asserts "github.com/stretchr/testify/assert"
 )
 
 func TestRedisDefaults(t *testing.T) {
-	assert := assert.New(t)
+	assert := asserts.New(t)
 	expectedAddr := "127.0.0.1:6379"
 	assert.Equal(expectedAddr, defaultRedisAddr)
 	expectedDB := 0
@@ -15,7 +15,7 @@ func TestRedisDefaults(t *testing.T) {
 }
 
 func TestRedisDBConfigurable(t *testing.T) {
-	assert := assert.New(t)
+	assert := asserts.New(t)
 	expectedDB := 1
 	client := newRedisClient(expectedDB)
 	assert.Equal(expectedDB, client.Options().DB)

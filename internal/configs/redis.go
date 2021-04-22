@@ -19,7 +19,7 @@ const (
 func NewDefaultRedisClient() *redis.Client {
 	var redisAddr string
 	var redisPassword string
-	var redisDB int = DefaultRedisDB
+	var redisDB int
 	var err error
 
 	if redisDB, err = strconv.Atoi(GetEnv(envRedisDatabase, strconv.Itoa(DefaultRedisDB))); err != nil {

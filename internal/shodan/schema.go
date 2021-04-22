@@ -9,19 +9,19 @@ import (
 )
 
 type RedisMeta struct {
-	Hash      int        `json:"hash"`
-	IP        int        `json:"ip"`
-	IPStr     string     `json:"ip_str"`
-	ISP       string     `json:"isp"`
-	Location  Location   `json:"location"`
-	Org       string     `json:"org"`
-	Port      int        `json:"port"`
-	Product   string     `json:"product"`
-	RawData   string     `json:"data"`
-	Redis     RedisData  `json:"redis"`
-	Shodan    ShodanMeta `json:"_shodan"`
-	Transport string     `json:"transport"`
-	Version   string     `json:"version"`
+	Hash      int       `json:"hash"`
+	IP        int       `json:"ip"`
+	IPStr     string    `json:"ip_str"`
+	ISP       string    `json:"isp"`
+	Location  Location  `json:"location"`
+	Org       string    `json:"org"`
+	Port      int       `json:"port"`
+	Product   string    `json:"product"`
+	RawData   string    `json:"data"`
+	Redis     RedisData `json:"redis"`
+	Shodan    Meta      `json:"_shodan"`
+	Transport string    `json:"transport"`
+	Version   string    `json:"version"`
 }
 
 func (rm *RedisMeta) GetRedisKey() string {
@@ -50,7 +50,7 @@ func (rm *RedisMeta) ToHSet(ctx context.Context, pipe redis.Pipeliner) {
 		"uptime_seconds", rm.Redis.Server.UptimeSeconds)
 }
 
-type ShodanMeta struct {
+type Meta struct {
 	ID string `json:"id"`
 }
 

@@ -4,7 +4,7 @@ import (
 	"github.com/RediSearch/redisearch-go/redisearch"
 )
 
-func (s *ShodanClient) ServersByCountry() error {
+func (s *Client) ServersByCountry() error {
 	// `FT.AGGREGATE idx:shodan "*" GROUPBY 1 @country REDUCE COUNT 0 AS num SORTBY 2 @num DESC MAX 25`
 	agg := redisearch.NewAggregateQuery().
 		SetQuery(redisearch.NewQuery("*")).
@@ -17,7 +17,7 @@ func (s *ShodanClient) ServersByCountry() error {
 	return err
 }
 
-func (s *ShodanClient) ServersByVersion() error {
+func (s *Client) ServersByVersion() error {
 	// `FT.AGGREGATE idx:shodan "*" GROUPBY 1 @redis_version REDUCE COUNT 0 AS num SORTBY 2 @num DESC`
 	agg := redisearch.NewAggregateQuery().SetQuery(redisearch.NewQuery("*")).
 		GroupBy(*redisearch.NewGroupBy().AddFields("@redis_version").
@@ -29,7 +29,7 @@ func (s *ShodanClient) ServersByVersion() error {
 	return err
 }
 
-func (s *ShodanClient) aggregateToMap(results [][]string, headers []string) {
+func (s *Client) aggregateToMap(results [][]string, headers []string) {
 	_ = make([]map[string]string, len(results))
 	resultMap := make(map[string]string)
 	for _, header := range headers {

@@ -16,7 +16,7 @@ const CityBlocksDataCSVPath string = "data/GeoLite2-City-CSV_20210413/GeoLite2-C
 const CityLocationDataCSVPath string = "data/GeoLite2-City-CSV_20210413/GeoLite2-City-Locations-en.csv"
 const CountryLocationDataCSVPath string = "data/GeoLite2-Country-CSV_20210413/GeoLite2-Country-Locations-en.csv"
 
-func (geo *GeoIPClient) ImportGeoIPData(redisClient *redis.Client) error {
+func (geo *Client) ImportGeoIPData(redisClient *redis.Client) error {
 	var err error
 	importMap := map[string]func([]string) interface{}{
 		ASNBlocksDataCSVPath:       NewASNBlock,
@@ -34,11 +34,11 @@ func (geo *GeoIPClient) ImportGeoIPData(redisClient *redis.Client) error {
 	return err
 }
 
-func (geo *GeoIPClient) importGeoIPData(deserial func([]string) interface{}, path string, redisClient *redis.Client) error {
+func (geo *Client) importGeoIPData(deserial func([]string) interface{}, path string, redisClient *redis.Client) error {
 	var err error
 	dump, err := os.Open(path)
 	if err != nil {
-		geo.log.Error("Failed to load GeoIP export data")
+		geo.log.Error("Failed to load GeoIP data")
 		return err
 	}
 	defer dump.Close()
@@ -47,10 +47,13 @@ func (geo *GeoIPClient) importGeoIPData(deserial func([]string) interface{}, pat
 	numRecords := 0
 	ctx := context.TODO()
 	// read headers first
-	csvReader.Read()
+	_, err = csvReader.Read()
+	if err != nil {
+		geo.log.Error("Failed to load GeoIP data as csv")
+		return err
+	}
 	for {
 		var row []string
-		var err error
 		pipe := redisClient.TxPipeline()
 		row, err = csvReader.Read()
 		if err == io.EOF {

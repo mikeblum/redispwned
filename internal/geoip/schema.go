@@ -12,7 +12,6 @@ import (
 	"github.com/go-redis/redis/v8"
 )
 
-const asnRedisKey = "asn"
 const cidrRedisKey = "cidr"
 
 type CityLocation struct {
@@ -200,6 +199,7 @@ func NewASNBlock(row []string) interface{} {
 	}
 }
 
+// find matching ASN for a CIDRspace if any
 func (asn *ASNBlock) GetRedisKey() string {
 	return strings.Join([]string{cidrRedisKey, asn.CIDR}, ":")
 }
@@ -241,12 +241,15 @@ func IPV4ToInt(ipv4 net.IP) (int64, error) {
 // Valid longitudes are from -180 to 180 degrees.
 // Valid latitudes are from -85.05112878 to 85.05112878 degrees.
 
+const maxLat = 90
+const maxLon = 180
+
 func ValidLat(lat float64) bool {
-	return math.Abs(lat) <= 90
+	return math.Abs(lat) <= maxLat
 }
 
 func ValidLon(lon float64) bool {
-	return math.Abs(lon) <= 180
+	return math.Abs(lon) <= maxLon
 }
 
 func CoordinateToFloat(coordinateStr string) (float64, error) {
