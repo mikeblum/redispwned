@@ -95,12 +95,3 @@ func (suite *SearchTestSuite) TestPingResponseNOAUTH() {
 	response.Results[0].Redis.Service.Banner.PingResponse = "(Error: NOAUTH Authentication required.)"
 	assert.NotNil(response)
 }
-
-// func (suite *SearchTestSuite) TestSearchRedisRequestIntegration() {
-// 	assert := asserts.New(suite.T())
-// 	response, err := RedisQuery(suite.client)
-// 	assert.Nil(err)
-// 	assert.NotNil(response)
-// 	assert.True(strings.EqualFold("ok", response.Status))
-// 	assert.True(len(response.Results) > 0)
-// }
