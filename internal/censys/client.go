@@ -7,6 +7,7 @@ import (
 	"net/http"
 	"strings"
 
+	"github.com/RediSearch/redisearch-go/redisearch"
 	config "github.com/mikeblum/haveibeenredised/internal/configs"
 	"github.com/sirupsen/logrus"
 )
@@ -22,6 +23,7 @@ const headerAccept = "Accept"
 type Client struct {
 	API *http.Client
 	Cfg *config.AppConfig
+	Idx *redisearch.Client
 	Log *logrus.Entry
 }
 
