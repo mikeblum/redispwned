@@ -6,14 +6,15 @@ import (
 	"encoding/json"
 	"net/http"
 
-	"github.com/mikeblum/haveibeenredised/internal/censys"
+	"github.com/mikeblum/redispwned/internal/censys"
 )
 
 const endpointSearchIPV4 = "search/ipv4"
 
 const queryRedis = `protocols: "6379/redis" OR tags.raw: "redis"`
 
-func RedisQuery(c *censys.Client) (*Response, error) {
+// RedisQuery - page: API will return the first page of results. One indexed.
+func RedisQuery(c *censys.Client, page int) (*Response, error) {
 	var response Response
 	var err error
 	var req *http.Request
@@ -28,7 +29,7 @@ func RedisQuery(c *censys.Client) (*Response, error) {
 	fields = append(fields, metaFields()...)
 	search := Request{
 		Query:   queryRedis,
-		Page:    1,
+		Page:    page,
 		Fields:  fields,
 		Flatten: false,
 	}

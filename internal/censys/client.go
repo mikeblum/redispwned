@@ -8,7 +8,7 @@ import (
 	"strings"
 
 	"github.com/RediSearch/redisearch-go/redisearch"
-	config "github.com/mikeblum/haveibeenredised/internal/configs"
+	config "github.com/mikeblum/redispwned/internal/configs"
 	"github.com/sirupsen/logrus"
 )
 

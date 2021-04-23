@@ -5,7 +5,7 @@ import (
 	"encoding/json"
 	"net/http"
 
-	censys "github.com/mikeblum/haveibeenredised/internal/censys"
+	censys "github.com/mikeblum/redispwned/internal/censys"
 )
 
 const endpointAccount = "account"

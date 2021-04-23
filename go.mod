@@ -1,4 +1,4 @@
-module github.com/mikeblum/haveibeenredised
+module github.com/mikeblum/redispwned
 
 go 1.16
 

@@ -7,8 +7,8 @@ import (
 	"os"
 	"testing"
 
-	censys "github.com/mikeblum/haveibeenredised/internal/censys"
-	config "github.com/mikeblum/haveibeenredised/internal/configs"
+	censys "github.com/mikeblum/redispwned/internal/censys"
+	config "github.com/mikeblum/redispwned/internal/configs"
 	"github.com/sirupsen/logrus"
 	asserts "github.com/stretchr/testify/assert"
 	suites "github.com/stretchr/testify/suite"

@@ -6,7 +6,7 @@ import (
 	"testing"
 
 	"github.com/go-redis/redis/v8"
-	config "github.com/mikeblum/haveibeenredised/internal/configs"
+	config "github.com/mikeblum/redispwned/internal/configs"
 	asserts "github.com/stretchr/testify/assert"
 	suites "github.com/stretchr/testify/suite"
 )

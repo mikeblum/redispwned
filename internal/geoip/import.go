@@ -38,7 +38,7 @@ func (geo *Client) importGeoIPData(deserial func([]string) interface{}, path str
 	var err error
 	dump, err := os.Open(path)
 	if err != nil {
-		geo.log.Error("Failed to load GeoIP data")
+		geo.log.Error("Failed to load GeoIP data: ", err)
 		return err
 	}
 	defer dump.Close()
@@ -49,7 +49,7 @@ func (geo *Client) importGeoIPData(deserial func([]string) interface{}, path str
 	// read headers first
 	_, err = csvReader.Read()
 	if err != nil {
-		geo.log.Error("Failed to load GeoIP data as csv")
+		geo.log.Error("Failed to load GeoIP data as csv: ", err)
 		return err
 	}
 	for {
@@ -83,15 +83,11 @@ func (geo *Client) importGeoIPData(deserial func([]string) interface{}, path str
 			geo.log.Errorf("Failed to cast deserializer: %T: ", v)
 		}
 		numRecords++
-		if numRecords%1000 == 0 {
-			_, err = pipe.Exec(ctx)
-			geo.log.Debug("IMPORT COMMIT")
-		}
 		if err != nil {
 			geo.log.Error(fmt.Sprintf("[%s] Failed to import GeoIP data", path), err)
 		}
 	}
 	geo.log.Infof("[%s] Loaded %d GeoIP records", path, numRecords)
 	dump.Close()
-	return err
+	return nil
 }
