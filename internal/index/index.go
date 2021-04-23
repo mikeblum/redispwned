@@ -8,7 +8,6 @@ import (
 	config "github.com/mikeblum/redispwned/internal/configs"
 )
 
-const idxName = "shodan:"
 const idxRedisVersionByCityCountryGeo = "idx:redis-version-by-country-city-geo"
 
 type Manager struct {
@@ -26,7 +25,7 @@ func (idx *Manager) BuildIndex() error {
 	// RediSearch will not index hashes whose fields do not match an existing index schema.
 	// You can see the number of hashes not indexed using FT.INFO - hash_indexing_failures
 	schema := redisearch.NewSchema(redisearch.DefaultOptions).
-		AddField(redisearch.NewTextFieldOptions("redis_version", redisearch.TextFieldOptions{Sortable: true})).
+		AddField(redisearch.NewTextFieldOptions("version", redisearch.TextFieldOptions{Sortable: true})).
 		AddField(redisearch.NewTextField("ip")).
 		AddField(redisearch.NewTextFieldOptions("city", redisearch.TextFieldOptions{Sortable: true})).
 		AddField(redisearch.NewTextFieldOptions("country", redisearch.TextFieldOptions{Sortable: true}))
@@ -34,12 +33,12 @@ func (idx *Manager) BuildIndex() error {
 	if err == nil {
 		err := idx.DropIndex(true)
 		if err != nil {
-			return nil
+			return err
 		}
 	}
 
 	// Create a index definition for automatic indexing on Hash updates.
-	indexDefinition := redisearch.NewIndexDefinition().SetAsync(false).AddPrefix(idxName)
+	indexDefinition := redisearch.NewIndexDefinition().SetAsync(false)
 
 	// Add the Index Definition
 	return idx.CreateIndexWithIndexDefinition(schema, indexDefinition)
