@@ -1,0 +1,5 @@
+baseURL = "https://redispwned.app/"
+languageCode = "en-us"
+title = "Have I Been Redised"
+
+theme = "redispwned"

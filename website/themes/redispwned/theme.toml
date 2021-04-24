@@ -1,0 +1,12 @@
+name = "redispwned"
+license = "MIT"
+licenselink = "https://github.com/mikeblum/redispwned/blob/main/LICENSE"
+description = "Hugo theme powering redispwned.app + haveibeenredised.com"
+homepage = "https://redispwned.app/"
+tags = ["redis"]
+features = []
+min_version = "0.41.0"
+
+[author]
+  name = "Michael Blum"
+  homepage = "https://github.com/mikeblum"

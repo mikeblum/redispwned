@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html lang="en" class="h-100">
+<head>
+    {{ partial "meta.html" . }}
+
+    <base href="{{ .Site.BaseURL }}">
+    <title>{{ .Title }}</title>
+    <link rel="canonical" href="{{ .Permalink }}">
+
+    {{ with .OutputFormats.Get "rss" -}}
+    {{ printf `<link rel="%s" type="%s" href="%s" title="%s" />` .Rel .MediaType.Type .Permalink $.Site.Title | safeHTML }}
+    {{ end -}}
+
+    {{ partial "includes.html" . }}
+</head>

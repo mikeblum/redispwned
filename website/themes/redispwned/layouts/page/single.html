@@ -1,0 +1,20 @@
+{{ partial "header" . }}
+{{ partial "nav" . }}
+<div class="container">
+  <section class="section">
+    <div class="container">
+      <article class="article">
+        <!-- supports emoji -->
+<h1 class="title"><a href="{{ .Permalink }}">{{ .Title | emojify }}</a>{{ if .Draft }} ::Draft{{ end }}</h1>
+        {{ if .Params.tags }}
+        {{ partial "tags" .Params.tags }}
+        {{ end }}
+        <p class="text-muted"><i class="fa fa-calendar" aria-hidden="true"></i> {{ .Date.Format "January 2, 2006" }}</p>
+        <div class="content">
+          {{ .Content }}
+        </div>
+      </article>
+    </div>
+  </section>
+</div>
+{{ partial "footer" . }}
