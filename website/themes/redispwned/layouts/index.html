@@ -1,22 +1,20 @@
 {{ partial "header" . }}
 
-<body class="d-flex flex-column h-100"></body>
-
 {{ partial "nav" . }}
 
 <main>
   <div class="px-4 py-5 my-5 text-center">
     <img class="d-block mx-auto mb-4" src="/images/redis.svg" alt="redis logo" width="150" height="">
     <p class="display-5">Is My Redis Exposed To The Internet?</p>
-</div>
-<div class="container">
-    <form class="d-flex">
-        <input class="form-control form-control-lg me-2" type="search" placeholder="IP Address (ex. 127.0.0.1) or Domain Name (ex. example.com)" aria-label="Search">
-        <button class="btn btn-outline-success" type="submit">Search</button>
-      </form>
-</div>
+  </div>
+  <div class="container">
+      <form class="d-flex">
+          <input class="form-control form-control-lg me-2" type="search" placeholder="IP Address (ex. 127.0.0.1) or Domain Name (ex. example.com)" aria-label="Search">
+          <button class="btn btn-outline-success" type="submit">Search</button>
+        </form>
+  </div>
 
-<div class="container col-xxl-8 px-4 py-5">
+  <div class="container col-xxl-8 px-4 py-5">
     <div class="row flex-lg-row-reverse align-items-center g-5 py-5">
       <div class="col-10 col-sm-8 col-lg-6">
           <div class="card border-light mb-3">
@@ -33,9 +31,8 @@
       </div>
     </div>
   </div>
+
+
 </main>
 
 {{ partial "footer" . }}
-</body>
-
-</html>

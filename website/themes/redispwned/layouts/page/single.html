@@ -1,20 +1,24 @@
 {{ partial "header" . }}
 {{ partial "nav" . }}
-<div class="container">
-  <section class="section">
-    <div class="container">
-      <article class="article">
-        <!-- supports emoji -->
-<h1 class="title"><a href="{{ .Permalink }}">{{ .Title | emojify }}</a>{{ if .Draft }} ::Draft{{ end }}</h1>
+<main>
+  <div class="container col-xxl-8 px-4 py-5">
+    <article class="article">
+      <!-- supports emoji -->
+      <h1 class="title">{{ .Title | emojify }}{{ if .Draft }} ::Draft{{ end }}</h1>
+      <div class="article-meta" aria-label="article-tags">
         {{ if .Params.tags }}
         {{ partial "tags" .Params.tags }}
         {{ end }}
-        <p class="text-muted"><i class="fa fa-calendar" aria-hidden="true"></i> {{ .Date.Format "January 2, 2006" }}</p>
-        <div class="content">
-          {{ .Content }}
-        </div>
-      </article>
-    </div>
-  </section>
-</div>
+      </div>
+
+      <!-- <aside>
+        {{ .TableOfContents }}
+      </aside> -->
+
+      <section aria-label="main">
+        {{ .Content }}
+      </section>
+    </article>
+  </div>
+</main>
 {{ partial "footer" . }}

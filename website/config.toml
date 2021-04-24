@@ -3,3 +3,5 @@ languageCode = "en-us"
 title = "Have I Been Redised"
 
 theme = "redispwned"
+enableEmoji = true
+enableRobotsTXT = true
