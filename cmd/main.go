@@ -15,7 +15,8 @@ var ctx = context.Background()
 
 func main() {
 	log := config.NewLog()
-	redisClient := config.NewDefaultRedisClient()
+	cfg := config.NewConfig()
+	redisClient := config.NewRedisClientFromConfig(cfg)
 	log.Info(redisClient.Ping(ctx))
 	err := loadGeoIPData(redisClient)
 	if err != nil {
@@ -25,9 +26,18 @@ func main() {
 	if err != nil {
 		log.Fatal("Failed to load Shodan data: ", err)
 	}
-	err = buildIndexes()
+	idx := index.NewManager(cfg)
+	err = buildIndexes(idx)
 	if err != nil {
 		log.Fatal("Failed to build search indexes: ", err)
+	}
+	err = idx.ServersByCountry()
+	if err != nil {
+		log.Warn("servers by country query failed: ", err)
+	}
+	err = idx.ServersByVersion()
+	if err != nil {
+		log.Warn("servers by version query failed: ", err)
 	}
 }
 
@@ -41,8 +51,7 @@ func loadShodanData(redisClient *redis.Client) error {
 	return shodanClient.ImportShodanData(redisClient)
 }
 
-func buildIndexes() error {
-	idx := index.NewManager()
+func buildIndexes(idx *index.Manager) error {
 	err := idx.BuildIndex()
 	if err != nil {
 		return err

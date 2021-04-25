@@ -6,6 +6,7 @@ import (
 
 	"github.com/go-redis/redis/v8"
 	config "github.com/mikeblum/redispwned/internal/configs"
+	"github.com/mikeblum/redispwned/internal/index"
 	"github.com/sirupsen/logrus"
 	asserts "github.com/stretchr/testify/assert"
 	suites "github.com/stretchr/testify/suite"
@@ -49,6 +50,7 @@ func (suite *MainTestSuite) TestLoadShodanData() {
 
 func (suite *MainTestSuite) TestBuildIndexes() {
 	assert := asserts.New(suite.T())
-	err := buildIndexes()
+	mgr := index.NewManager(suite.cfg)
+	err := buildIndexes(mgr)
 	assert.Nil(err)
 }

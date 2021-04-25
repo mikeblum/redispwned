@@ -14,8 +14,8 @@ type Manager struct {
 	*redisearch.Client
 }
 
-func NewManager() *Manager {
-	rediSearch := config.NewRediSearchClient(idxRedisVersionByCityCountryGeo)
+func NewManager(cfg *config.AppConfig) *Manager {
+	rediSearch := config.NewRediSearchClientFromConfig(cfg, idxRedisVersionByCityCountryGeo)
 	return &Manager{
 		rediSearch,
 	}

@@ -18,8 +18,8 @@ type IndexTestSuite struct {
 }
 
 func (suite *IndexTestSuite) SetupTest() {
-	suite.idx = NewManager()
 	suite.cfg = config.NewConfig()
+	suite.idx = NewManager(suite.cfg)
 	suite.log = config.NewLog()
 }
 
@@ -37,9 +37,8 @@ func TestIndexTestSuite(t *testing.T) {
 func (suite *IndexTestSuite) TestBuildIndex() {
 	assert := asserts.New(suite.T())
 	var err error
-	mgr := NewManager()
-	err = mgr.BuildIndex()
+	err = suite.idx.BuildIndex()
 	assert.Nil(err)
-	err = mgr.AwaitIndex()
+	err = suite.idx.AwaitIndex()
 	assert.Nil(err)
 }
