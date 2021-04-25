@@ -12,33 +12,46 @@
 <!-- Javascript -->
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
-  // === include 'setup' then 'config' above ===
-  const labels = [
-      'January',
-      'February',
-      'March',
-      'April',
-      'May',
-      'June',
-  ];
-  const data = {
-      labels: labels,
-      datasets: [{
-          label: 'My First dataset',
-          backgroundColor: 'rgb(255, 99, 132)',
-          borderColor: 'rgb(255, 99, 132)',
-          data: [0, 10, 5, 2, 20, 30, 45],
-      }]
+  document.addEventListener("DOMContentLoaded", function(event) {
+    var request = new XMLHttpRequest();
+  request.open('GET', 'http://localhost:8080/v1/servers-by-country', true);
+
+  request.onload = function() {
+    if (this.status >= 200 && this.status < 400) {
+      var jsonData = JSON.parse(this.response);
+      const data = {
+          labels: jsonData.labels,
+          datasets: [{
+              label: 'Exposed Redis Servers By Country',
+              // Redis Labs red
+              backgroundColor: '#cd5d57',
+              borderColor: 'rgb(255, 99, 132)',
+              data: jsonData.data,
+          }]
+      };
+      const config = {
+          type: 'bar',
+          data,
+          // horizontal-bar-chart
+          options: {
+            indexAxis: 'y',
+          }
+      };
+      var myChart = new Chart(
+        document.getElementById('servers-by-country'),
+        config
+      );
+    } else {
+      console.log("Failed to render report")
+    }
   };
-  const config = {
-      type: 'bar',
-      data,
-      options: {}
+
+  request.onerror = function() {
+    console.log("Failed to fetch report")
   };
-  var myChart = new Chart(
-    document.getElementById('myChart'),
-    config
-  );
+
+  request.send();
+  });
 </script>
 
 </body>
