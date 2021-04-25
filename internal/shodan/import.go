@@ -34,8 +34,12 @@ func (s *Client) ImportShodanData(redisClient *redis.Client) error {
 		meta.ToHSet(ctx, pipe)
 		numRecords++
 	}
-	results, _ := pipe.Exec(ctx)
-	s.log.Infof("Loaded %d / %d Shodan records", numRecords, len(results))
+	results, err := pipe.Exec(ctx)
+	if err != nil {
+		s.log.Error("Failed to commit Shodan data: ", err)
+	} else {
+		s.log.Infof("Loaded %d / %d Shodan records", numRecords, len(results))
+	}
 	dump.Close()
 	return nil
 }

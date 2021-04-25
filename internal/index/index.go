@@ -38,7 +38,7 @@ func (idx *Manager) BuildIndex() error {
 	}
 
 	// Create a index definition for automatic indexing on Hash updates.
-	indexDefinition := redisearch.NewIndexDefinition().SetAsync(false)
+	indexDefinition := redisearch.NewIndexDefinition().SetAsync(false).AddPrefix("shodan:")
 
 	// Add the Index Definition
 	return idx.CreateIndexWithIndexDefinition(schema, indexDefinition)

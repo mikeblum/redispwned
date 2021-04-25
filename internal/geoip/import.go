@@ -52,9 +52,9 @@ func (geo *Client) importGeoIPData(deserial func([]string) interface{}, path str
 		geo.log.Error("Failed to load GeoIP data as csv: ", err)
 		return err
 	}
+	pipe := redisClient.Pipeline()
 	for {
 		var row []string
-		pipe := redisClient.TxPipeline()
 		row, err = csvReader.Read()
 		if err == io.EOF {
 			break
@@ -63,31 +63,45 @@ func (geo *Client) importGeoIPData(deserial func([]string) interface{}, path str
 			break
 		}
 		obj := deserial(row)
-		switch v := obj.(type) {
-		case *ASNBlock:
-			asnBlock := obj.(*ASNBlock)
-			asnBlock.ToHSet(ctx, pipe)
-		case *CityBlock:
-			cityBlock := obj.(*CityBlock)
-			cityBlock.ToHSet(ctx, pipe)
-		case *CityLocation:
-			cityLocation := obj.(*CityLocation)
-			cityLocation.ToHSet(ctx, pipe)
-		case *CountryBlock:
-			countryBlock := obj.(*CountryBlock)
-			countryBlock.ToHSet(ctx, pipe)
-		case *CountryLocation:
-			countryLocation := obj.(*CountryLocation)
-			countryLocation.ToHSet(ctx, pipe)
-		default:
-			geo.log.Errorf("Failed to cast deserializer: %T: ", v)
+		geo.deserializeData(ctx, pipe, obj)
+		if numRecords%1000 == 0 {
+			_, err = pipe.Exec(ctx)
+			if err != nil {
+				geo.log.Error("Failed to commit GeoIP data: ", err)
+			}
 		}
 		numRecords++
 		if err != nil {
 			geo.log.Error(fmt.Sprintf("[%s] Failed to import GeoIP data", path), err)
 		}
 	}
+	_, err = pipe.Exec(ctx)
+	if err != nil {
+		geo.log.Error("Failed to commit GeoIP data: ", err)
+	}
 	geo.log.Infof("[%s] Loaded %d GeoIP records", path, numRecords)
 	dump.Close()
 	return nil
+}
+
+func (geo *Client) deserializeData(ctx context.Context, pipe redis.Pipeliner, obj interface{}) {
+	switch v := obj.(type) {
+	case *ASNBlock:
+		asnBlock := obj.(*ASNBlock)
+		asnBlock.ToHSet(ctx, pipe)
+	case *CityBlock:
+		cityBlock := obj.(*CityBlock)
+		cityBlock.ToHSet(ctx, pipe)
+	case *CityLocation:
+		cityLocation := obj.(*CityLocation)
+		cityLocation.ToHSet(ctx, pipe)
+	case *CountryBlock:
+		countryBlock := obj.(*CountryBlock)
+		countryBlock.ToHSet(ctx, pipe)
+	case *CountryLocation:
+		countryLocation := obj.(*CountryLocation)
+		countryLocation.ToHSet(ctx, pipe)
+	default:
+		geo.log.Errorf("Failed to cast deserializer: %T: ", v)
+	}
 }

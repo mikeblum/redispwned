@@ -11,7 +11,9 @@ import (
 
 const (
 	envRedisAddr     = "REDIS_ADDR"
+	defaultRedisHost = "127.0.0.1"
 	defaultRedisAddr = "127.0.0.1:6379"
+	defaultRedisPort = 6379
 	envRedisPassword = "REDIS_PASSWORD"
 	envRedisDatabase = "REDIS_DB"
 	envRedisPort     = "REDIS_PORT"
@@ -20,11 +22,10 @@ const (
 )
 
 func NewRedisClientFromConfig(cfg *AppConfig) *redis.Client {
-	redisAddr := cfg.GetString(envRedisAddr)
-	redisPort := cfg.GetInt(envRedisPort)
+	fmt.Println(redisAddr(cfg))
 	redisPassword := cfg.GetString(envRedisPassword)
 	return redis.NewClient(&redis.Options{
-		Addr:     fmt.Sprintf("%s:%d", redisAddr, redisPort),
+		Addr:     redisAddr(cfg),
 		Password: redisPassword,
 		DB:       0,
 	})
@@ -81,5 +82,13 @@ func NewRediSearchClient(indexName string) *redisearch.Client {
 }
 
 func redisAddr(cfg *AppConfig) string {
-	return fmt.Sprintf("%s:%d", cfg.GetString(envRedisAddr), cfg.GetInt(envRedisPort))
+	var redisAddr string = cfg.GetString(envRedisAddr)
+	if redisAddr == "" {
+		redisAddr = defaultRedisHost
+	}
+	var redisPort int = cfg.GetInt(envRedisPort)
+	if redisPort == 0 {
+		redisPort = defaultRedisPort
+	}
+	return fmt.Sprintf("%s:%d", redisAddr, redisPort)
 }

@@ -22,12 +22,12 @@ func (idx *Manager) ServersByCountry() error {
 func (idx *Manager) ServersByVersion() error {
 	// `FT.AGGREGATE idx: "*" GROUPBY 1 @redis_version REDUCE COUNT 0 AS num SORTBY 2 @num DESC`
 	agg := redisearch.NewAggregateQuery().SetQuery(redisearch.NewQuery("*")).
-		GroupBy(*redisearch.NewGroupBy().AddFields("@redis_version").
+		GroupBy(*redisearch.NewGroupBy().AddFields("@version").
 			Reduce(*redisearch.NewReducerAlias(redisearch.GroupByReducerCount, []string{}, "count"))).
 		SortBy([]redisearch.SortingKey{*redisearch.NewSortingKeyDir("@count", false)}).Limit(0, 5)
 
 	results, _, err := idx.Aggregate(agg)
-	idx.aggregateToMap(results, []string{"redis_version", "count"})
+	idx.aggregateToMap(results, []string{"version", "count"})
 	return err
 }
 
