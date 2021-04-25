@@ -70,7 +70,7 @@ func newRedisClient(redisDB int) *redis.Client {
 
 func NewRediSearchClientFromConfig(cfg *AppConfig, idxName string) *redisearch.Client {
 	pool := &redigo.Pool{Dial: func() (redigo.Conn, error) {
-		return redigo.Dial("tcp", redisAddr(cfg), redigo.DialPassword(cfg.GetString(envRedisPassword)))
+		return redigo.Dial("tcp", redisAddr(cfg), redigo.DialPassword(redisAuth(cfg)))
 	}}
 	client := redisearch.NewClientFromPool(pool, idxName)
 	return client
@@ -91,4 +91,8 @@ func redisAddr(cfg *AppConfig) string {
 		redisPort = defaultRedisPort
 	}
 	return fmt.Sprintf("%s:%d", redisAddr, redisPort)
+}
+
+func redisAuth(cfg *AppConfig) string {
+	return cfg.GetString(envRedisPassword)
 }

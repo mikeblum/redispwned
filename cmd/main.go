@@ -14,11 +14,12 @@ import (
 var ctx = context.Background()
 
 func main() {
+	var err error
 	log := config.NewLog()
 	cfg := config.NewConfig()
 	redisClient := config.NewRedisClientFromConfig(cfg)
 	log.Info(redisClient.Ping(ctx))
-	err := loadGeoIPData(redisClient)
+	err = loadGeoIPData(redisClient)
 	if err != nil {
 		log.Fatal("Failed to load GeoIP data: ", err)
 	}

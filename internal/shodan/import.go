@@ -13,7 +13,7 @@ import (
 const shodanDataJSONPath = "data/shodan-export.json"
 
 func (s *Client) ImportShodanData(redisClient *redis.Client) error {
-	ctx := context.TODO()
+	ctx := context.Background()
 	var err error
 	dump, err := s.LoadFile(shodanDataJSONPath)
 	if err != nil {
@@ -41,6 +41,7 @@ func (s *Client) ImportShodanData(redisClient *redis.Client) error {
 		s.log.Infof("Loaded %d / %d Shodan records", numRecords, len(results))
 	}
 	dump.Close()
+	pipe.Close()
 	return nil
 }
 

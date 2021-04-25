@@ -45,14 +45,14 @@ func (geo *Client) importGeoIPData(deserial func([]string) interface{}, path str
 	reader := bufio.NewReader(dump)
 	csvReader := csv.NewReader(reader)
 	numRecords := 0
-	ctx := context.TODO()
+	ctx := context.Background()
 	// read headers first
 	_, err = csvReader.Read()
 	if err != nil {
 		geo.log.Error("Failed to load GeoIP data as csv: ", err)
 		return err
 	}
-	pipe := redisClient.Pipeline()
+	pipe := redisClient.TxPipeline()
 	for {
 		var row []string
 		row, err = csvReader.Read()
@@ -81,6 +81,7 @@ func (geo *Client) importGeoIPData(deserial func([]string) interface{}, path str
 	}
 	geo.log.Infof("[%s] Loaded %d GeoIP records", path, numRecords)
 	dump.Close()
+	pipe.Close()
 	return nil
 }
 

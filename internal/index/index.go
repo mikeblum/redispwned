@@ -6,19 +6,24 @@ import (
 
 	"github.com/RediSearch/redisearch-go/redisearch"
 	config "github.com/mikeblum/redispwned/internal/configs"
+	"github.com/sirupsen/logrus"
 )
 
 const idxRedisVersionByCityCountryGeo = "idx:redis-version-by-country-city-geo"
+const dropDocuments = false
 
 type Manager struct {
 	*redisearch.Client
+	log *logrus.Entry
 }
 
 func NewManager(cfg *config.AppConfig) *Manager {
 	rediSearch := config.NewRediSearchClientFromConfig(cfg, idxRedisVersionByCityCountryGeo)
-	return &Manager{
+	manager := &Manager{
 		rediSearch,
+		config.NewLog(),
 	}
+	return manager
 }
 
 func (idx *Manager) BuildIndex() error {
@@ -31,14 +36,14 @@ func (idx *Manager) BuildIndex() error {
 		AddField(redisearch.NewTextFieldOptions("country", redisearch.TextFieldOptions{Sortable: true}))
 	_, err := idx.Info()
 	if err == nil {
-		err := idx.DropIndex(true)
+		err := idx.DropIndex(dropDocuments)
 		if err != nil {
 			return err
 		}
 	}
 
 	// Create a index definition for automatic indexing on Hash updates.
-	indexDefinition := redisearch.NewIndexDefinition().SetAsync(false).AddPrefix("shodan:")
+	indexDefinition := redisearch.NewIndexDefinition().SetAsync(false).AddPrefix("censys:").AddPrefix("shodan:")
 
 	// Add the Index Definition
 	return idx.CreateIndexWithIndexDefinition(schema, indexDefinition)
