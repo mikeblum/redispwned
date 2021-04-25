@@ -1,10 +1,18 @@
 package index
 
 import (
+	"strconv"
+	"strings"
+
 	"github.com/RediSearch/redisearch-go/redisearch"
 )
 
-func (idx *Manager) ServersByCountry() error {
+type CountResult struct {
+	Value string `json:"value"`
+	Count int    `json:"count"`
+}
+
+func (idx *Manager) ServersByCountry() ([]CountResult, error) {
 	// `FT.AGGREGATE idx: "*" GROUPBY 1 @country REDUCE COUNT 0 AS num SORTBY 2 @num DESC MAX 25`
 	agg := redisearch.NewAggregateQuery().
 		GroupBy(*redisearch.NewGroupBy().AddFields("@country").
@@ -12,31 +20,42 @@ func (idx *Manager) ServersByCountry() error {
 		SortBy([]redisearch.SortingKey{*redisearch.NewSortingKeyDir("@count", false)}).Limit(0, 25)
 
 	results, _, err := idx.Aggregate(agg)
-	idx.aggregateToMap(results, []string{"country", "count"})
-	return err
+	mapping := idx.aggregateCountToMap(results, []string{"country", "count"})
+	return mapping, err
 }
 
-func (idx *Manager) ServersByVersion() error {
-	// `FT.AGGREGATE idx: "*" GROUPBY 1 @redis_version REDUCE COUNT 0 AS num SORTBY 2 @num DESC`
+func (idx *Manager) ServersByVersion() ([]CountResult, error) {
+	// `FT.AGGREGATE idx: "*" GROUPBY 1 @version REDUCE COUNT 0 AS num SORTBY 2 @num DESC`
 	agg := redisearch.NewAggregateQuery().
 		GroupBy(*redisearch.NewGroupBy().AddFields("@version").
 			Reduce(*redisearch.NewReducerAlias(redisearch.GroupByReducerCount, []string{}, "count"))).
 		SortBy([]redisearch.SortingKey{*redisearch.NewSortingKeyDir("@count", false)}).Limit(0, 5)
 
 	results, _, err := idx.Aggregate(agg)
-	idx.aggregateToMap(results, []string{"version", "count"})
-	return err
+	mapping := idx.aggregateCountToMap(results, []string{"version", "count"})
+	return mapping, err
 }
 
-func (idx *Manager) aggregateToMap(results [][]string, headers []string) {
-	_ = make([]map[string]string, len(results))
-	resultMap := make(map[string]string)
+func (idx *Manager) aggregateCountToMap(results [][]string, headers []string) []CountResult {
+	mapping := make([]CountResult, len(results))
+	headerMap := make(map[string]string)
 	for _, header := range headers {
-		resultMap[header] = ""
+		headerMap[header] = ""
 	}
-	for _, row := range results {
+	for r, row := range results {
+		result := CountResult{}
 		for i, col := range row {
-			idx.log.Infof("%d %s", i, col)
+			if _, ok := headerMap[col]; ok {
+				if strings.EqualFold(col, "count") {
+					if count, err := strconv.Atoi(row[i+1]); err == nil {
+						result.Count = count
+					}
+				} else {
+					result.Value = row[i+1]
+				}
+			}
 		}
+		mapping[r] = result
 	}
+	return mapping
 }

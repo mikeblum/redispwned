@@ -32,13 +32,19 @@ func main() {
 	if err != nil {
 		log.Fatal("Failed to build search indexes: ", err)
 	}
-	err = idx.ServersByCountry()
+	serversByCountry, err := idx.ServersByCountry()
 	if err != nil {
 		log.Warn("servers by country query failed: ", err)
 	}
-	err = idx.ServersByVersion()
+	for _, result := range serversByCountry {
+		log.Info(result)
+	}
+	serversByVersion, err := idx.ServersByVersion()
 	if err != nil {
 		log.Warn("servers by version query failed: ", err)
+	}
+	for _, result := range serversByVersion {
+		log.Info(result)
 	}
 }
 
