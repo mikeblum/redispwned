@@ -14,12 +14,29 @@ type Report struct {
 
 func Routes(router *gin.Engine) {
 	v1 := router.Group("/v1")
-	v1.GET("/servers-by-country", reportServersByCountry)
+	v1.GET("/servers-by-country", serversByCountry)
+	v1.GET("/servers-by-version", serversByVersion)
 }
 
-func reportServersByCountry(c *gin.Context) {
+func serversByCountry(c *gin.Context) {
 	idx := api.NewSearchEngine()
 	results, err := idx.ServersByCountry()
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"message": "failed",
+		})
+	}
+	report := &Report{}
+	for _, result := range results {
+		report.Labels = append(report.Labels, result.Value)
+		report.Data = append(report.Data, result.Count)
+	}
+	c.JSON(http.StatusOK, report)
+}
+
+func serversByVersion(c *gin.Context) {
+	idx := api.NewSearchEngine()
+	results, err := idx.ServersByVersion()
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"message": "failed",

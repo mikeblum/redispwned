@@ -21,6 +21,11 @@ func (idx *Manager) ServersByCountry() ([]CountResult, error) {
 
 	results, _, err := idx.Aggregate(agg)
 	mapping := idx.aggregateCountToMap(results, []string{"country", "count"})
+	// Titleize country names
+	for i, data := range mapping {
+		data.Value = strings.Title(data.Value)
+		mapping[i] = data
+	}
 	return mapping, err
 }
 
