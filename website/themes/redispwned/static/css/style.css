@@ -12538,3 +12538,15 @@ readers do not read off random characters that represent icons */
 
 .hibr-link {
   text-decoration: none; }
+
+blockquote {
+  margin-bottom: 1rem;
+  font-size: 1.25rem; }
+
+blockquote > :last-child {
+  margin-bottom: 0; }
+
+a {
+  color: #212529; }
+  a:hover {
+    color: #6c757d; }

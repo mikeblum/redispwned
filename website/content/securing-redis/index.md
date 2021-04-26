@@ -19,7 +19,7 @@ All read up on Redis security? Let's recap!
 
 ### Rule #1: Don't Expose Redis to the Public Internet!!
 
-On its face this may seem counter-intuitive - RedisLabs runs servers all over the world that are publicly available - why can't you?
+On its face this may seem counter-intuitive - RedisLabs runs servers all over the world that are publicly available - why ~~can't~~ shouldn't you?
 
 As is true of any SaaS provider (AWS with ElastiCache, RedisLabs, etc) - they have dedicated engineering teams to harden and monitor every aspect of running a database like Redis in the cloud. Most side projects, companies, and individual contributors have neither the time, money, nor desire to devote themselves to hardening and continuously monitoring their publicly exposed databases (be it Redis or some other database for that matter).
 
@@ -39,7 +39,7 @@ Redis Access Control Lists (ACLs) are new in Redis 6.x and give much finer0grain
 
 [Getting Started With Redis 6 ACLs](https://redislabs.com/blog/getting-started-redis-6-access-control-lists-acls/)
 
-as well as the `redis.io docs:
+as well as the `redis.io` docs:
 
 [Redis ACLs](https://redis.io/topics/acl)
 

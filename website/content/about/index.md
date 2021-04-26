@@ -36,7 +36,7 @@ This was built for the [RedisLabs 2021 Hackathon](https://redislabs.com/hackatho
 
 I use Redis at work and on side projects and wanted to learn about the state of Redis deployments on the internet today.
 
-- [me on the Internet](https://mblum.me)
+- [me on the internet](https://mblum.me)
 - [me on Github](https://github.com/mikeblum)
 - [me on Twitter](https://twitter.com/roguequery)
 
@@ -50,7 +50,15 @@ RedisPwned uses data from a number of sources to scan the internet for publicly 
 
 ## Powered By
 
-RedisPwned is an open-source project that utilizes a few different datasets:
+RedisPwned is an open-source project that:
+
+#### Runs on ![Hugo](/images/hugo.svg)
+
+#### Hosted by ![Amazon Web Services (AWS)](/images/aws.svg)
+
+#### Secured by ![Let's Encrypt](/images/letsencrypt.svg)
+
+#### Written in ![Golang](/images/go.svg)
 
 This product includes GeoLite2 data created by MaxMind, available from [http://www.maxmind.com](http://www.maxmind.com)
 
