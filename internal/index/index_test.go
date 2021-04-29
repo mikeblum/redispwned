@@ -17,15 +17,12 @@ type IndexTestSuite struct {
 	log *logrus.Entry
 }
 
-func (suite *IndexTestSuite) SetupTest() {
+func (suite *IndexTestSuite) SetupSuite() {
 	suite.cfg = config.NewConfig()
 	suite.idx = NewManager(suite.cfg)
 	suite.log = config.NewLog()
-}
-
-func (suite *IndexTestSuite) SetupSuite() {
 	// use 1 in tests, 0 in production
-	client := config.NewRedisClientTest()
+	client := config.NewRedisClientTest(suite.cfg)
 	// !!DANGER!! flush db before each test
 	client.FlushDB(context.TODO())
 }

@@ -22,7 +22,6 @@ const (
 )
 
 func NewRedisClientFromConfig(cfg *AppConfig) *redis.Client {
-	fmt.Println(redisAddr(cfg))
 	redisPassword := cfg.GetString(envRedisPassword)
 	return redis.NewClient(&redis.Options{
 		Addr:     redisAddr(cfg),
@@ -47,10 +46,10 @@ func NewDefaultRedisClient() *redis.Client {
 	})
 }
 
-func NewRedisClientTest() *redis.Client {
+func NewRedisClientTest(cfg *AppConfig) *redis.Client {
 	var redisAddr string
 	var redisDB int = TestRedisDB
-	redisPassword := GetEnv(envRedisPassword, "")
+	redisPassword := cfg.GetString(envRedisPassword)
 	return redis.NewClient(&redis.Options{
 		Addr:     redisAddr,
 		Password: redisPassword,

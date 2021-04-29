@@ -12,7 +12,9 @@ import (
 	"github.com/go-redis/redis/v8"
 )
 
+const asnRedisKey = "asn"
 const cidrRedisKey = "cidr"
+const geoRedisKey = "geo"
 
 type CityLocation struct {
 	GeonameID           int    `csv:"geoname_id"`
@@ -45,7 +47,8 @@ func NewCityLocation(row []string) interface{} {
 }
 
 func (cl *CityLocation) GetRedisKey() string {
-	return fmt.Sprintf("city:%d", cl.GeonameID)
+	geoname := strconv.Itoa(cl.GeonameID)
+	return strings.Join([]string{geoRedisKey, geoname}, ":")
 }
 
 func (cl *CityLocation) ToHSet(ctx context.Context, pipe redis.Pipeliner) {
@@ -83,32 +86,33 @@ func NewCityBlock(row []string) interface{} {
 }
 
 func (cb *CityBlock) GetRedisKey() string {
-	return strings.Join([]string{cidrRedisKey, cb.CIDR}, ":")
+	geoname := strconv.Itoa(cb.GeonameID)
+	return strings.Join([]string{geoRedisKey, geoname}, ":")
 }
 
 func (cb *CityBlock) ToHSet(ctx context.Context, pipe redis.Pipeliner) {
 	if broadcast, err := IPV4ToInt(cb.Broadcast); err == nil {
-		pipe.ZAdd(ctx, cb.GetRedisKey(), &redis.Z{
+		pipe.ZAdd(ctx, cidrRedisKey, &redis.Z{
 			Score:  float64(broadcast),
-			Member: strings.Join([]string{cb.GetRedisKey(), "broadcast"}, ":"),
+			Member: cb.GeonameID,
 		})
 	}
 	if cb.Network != nil {
 		if network, err := IPV4ToInt(cb.Network.IP); err == nil {
-			pipe.ZAdd(ctx, cb.GetRedisKey(), &redis.Z{
+			pipe.ZAdd(ctx, cidrRedisKey, &redis.Z{
 				Score:  float64(network),
-				Member: strings.Join([]string{cb.GetRedisKey(), "network"}, ":"),
+				Member: cb.GeonameID,
 			})
 		}
 	}
 	// The command takes arguments in the standard format x,y
 	// so the longitude must be specified before the latitude
-	if ValidLon(cb.Longitude) && ValidLat(cb.Latitude) {
-		pipe.GeoAdd(ctx, cb.GetRedisKey(), &redis.GeoLocation{
-			Longitude: cb.Longitude,
-			Latitude:  cb.Latitude,
-		})
-	}
+	// if ValidLon(cb.Longitude) && ValidLat(cb.Latitude) {
+	// 	pipe.GeoAdd(ctx, cb.GetRedisKey(), &redis.GeoLocation{
+	// 		Longitude: cb.Longitude,
+	// 		Latitude:  cb.Latitude,
+	// 	})
+	// }
 }
 
 type CountryLocation struct {
@@ -133,7 +137,8 @@ func NewCountryLocation(row []string) interface{} {
 }
 
 func (cl *CountryLocation) GetRedisKey() string {
-	return fmt.Sprintf("country:%d", cl.GeonameID)
+	geoname := strconv.Itoa(cl.GeonameID)
+	return strings.Join([]string{geoRedisKey, geoname}, ":")
 }
 
 func (cl *CountryLocation) ToHSet(ctx context.Context, pipe redis.Pipeliner) {
@@ -160,21 +165,17 @@ func NewCountryBlock(row []string) interface{} {
 	}
 }
 
-func (cb *CountryBlock) GetRedisKey() string {
-	return strings.Join([]string{cidrRedisKey, cb.CIDR}, ":")
-}
-
 func (cb *CountryBlock) ToHSet(ctx context.Context, pipe redis.Pipeliner) {
 	if broadcast, err := IPV4ToInt(cb.Broadcast); err == nil {
-		pipe.ZAdd(ctx, cb.GetRedisKey(), &redis.Z{
+		pipe.ZAdd(ctx, cidrRedisKey, &redis.Z{
 			Score:  float64(broadcast),
-			Member: strings.Join([]string{cb.GetRedisKey(), "broadcast"}, ":"),
+			Member: cb.GeonameID,
 		})
 	}
 	if network, err := IPV4ToInt(cb.Network.IP); err == nil {
-		pipe.ZAdd(ctx, cb.GetRedisKey(), &redis.Z{
+		pipe.ZAdd(ctx, cidrRedisKey, &redis.Z{
 			Score:  float64(network),
-			Member: strings.Join([]string{cb.GetRedisKey(), "network"}, ":"),
+			Member: cb.GeonameID,
 		})
 	}
 }
@@ -201,27 +202,25 @@ func NewASNBlock(row []string) interface{} {
 
 // find matching ASN for a CIDRspace if any
 func (asn *ASNBlock) GetRedisKey() string {
-	return strings.Join([]string{cidrRedisKey, asn.CIDR}, ":")
+	return strings.Join([]string{asnRedisKey, asn.CIDR}, ":")
 }
 
 func (asn *ASNBlock) ToHSet(ctx context.Context, pipe redis.Pipeliner) {
 	if broadcast, err := IPV4ToInt(asn.Broadcast); err == nil {
-		var network int64
-		network, _ = IPV4ToInt(asn.Network.IP)
-		pipe.ZAdd(ctx, asn.GetRedisKey(), &redis.Z{
+		pipe.ZAdd(ctx, cidrRedisKey, &redis.Z{
 			Score:  float64(broadcast),
-			Member: strings.Join([]string{asn.GetRedisKey(), "broadcast"}, ":"),
-		}, &redis.Z{
-			Score:  float64(network),
-			Member: strings.Join([]string{asn.GetRedisKey(), "network"}, ":"),
-		}, &redis.Z{
-			Score:  float64(1),
-			Member: asn.ASN,
-		}, &redis.Z{
-			Score:  float64(1),
-			Member: asn.Org,
+			Member: asn.CIDR,
 		})
 	}
+	if network, err := IPV4ToInt(asn.Network.IP); err == nil {
+		pipe.ZAdd(ctx, cidrRedisKey, &redis.Z{
+			Score:  float64(network),
+			Member: asn.CIDR,
+		})
+	}
+	pipe.HSet(ctx, asn.GetRedisKey(),
+		"org", asn.Org,
+		"asn", asn.ASN)
 }
 
 // IP Addr Utils

@@ -11,21 +11,23 @@ import (
 	"github.com/go-redis/redis/v8"
 )
 
-const ASNBlocksDataCSVPath string = "data/GeoLite2-ASN-CSV_20210420/GeoLite2-ASN-Blocks-IPv4.csv"
-const CityBlocksDataCSVPath string = "data/GeoLite2-City-CSV_20210413/GeoLite2-City-Blocks-IPv4.csv"
-const CityLocationDataCSVPath string = "data/GeoLite2-City-CSV_20210413/GeoLite2-City-Locations-en.csv"
-const CountryLocationDataCSVPath string = "data/GeoLite2-Country-CSV_20210413/GeoLite2-Country-Locations-en.csv"
+const ASNBlocksDataCSVPath string = "/etc/data/GeoLite2-ASN-CSV_20210420/GeoLite2-ASN-Blocks-IPv4.csv"
+const CityBlocksDataCSVPath string = "/etc/data/GeoLite2-City-CSV_20210413/GeoLite2-City-Blocks-IPv4.csv"
+const CityLocationDataCSVPath string = "/etc/data/GeoLite2-City-CSV_20210413/GeoLite2-City-Locations-en.csv"
+const CountryBlockDataCSVPath string = "/etc/data/GeoLite2-Country-CSV_20210413/GeoLite2-Country-Blocks-IPv4.csv"
+const CountryLocationDataCSVPath string = "/etc/data/GeoLite2-Country-CSV_20210413/GeoLite2-Country-Locations-en.csv"
 
-func (geo *Client) ImportGeoIPData(redisClient *redis.Client) error {
+func (geo *Client) ImportGeoIPData() error {
 	var err error
 	importMap := map[string]func([]string) interface{}{
 		ASNBlocksDataCSVPath:       NewASNBlock,
 		CityLocationDataCSVPath:    NewCityLocation,
-		CountryLocationDataCSVPath: NewCountryLocation,
 		CityBlocksDataCSVPath:      NewCityBlock,
+		CountryLocationDataCSVPath: NewCountryLocation,
+		CountryBlockDataCSVPath:    NewCountryBlock,
 	}
 	for path, f := range importMap {
-		err = geo.importGeoIPData(f, path, redisClient)
+		err = geo.importGeoIPData(f, path, geo.client)
 		if err != nil {
 			geo.log.Error("Failed to load GeoIP export data: ", err)
 			return err

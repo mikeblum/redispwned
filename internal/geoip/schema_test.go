@@ -13,20 +13,21 @@ import (
 
 type GeoIPTestSuite struct {
 	suites.Suite
-	client *redis.Client
-	err    error
+	redis *redis.Client
+	err   error
 }
 
 func (suite *GeoIPTestSuite) SetupTest() {
 	// use 1 in tests, 0 in production
-	suite.client = config.NewRedisClientTest()
+	cfg := config.NewConfig()
+	suite.redis = config.NewRedisClientTest(cfg)
 	// !!DANGER!! flush db before each test
-	response := suite.client.FlushDB(context.TODO())
+	response := suite.redis.FlushDB(context.TODO())
 	suite.err = response.Err()
 }
 
 func (suite *GeoIPTestSuite) TearDownAllSuite() {
-	suite.client.FlushDB(context.TODO())
+	suite.redis.FlushDB(context.TODO())
 }
 
 func TestGeoIPTestSuite(t *testing.T) {

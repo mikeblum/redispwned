@@ -10,7 +10,7 @@ import (
 	"github.com/go-redis/redis/v8"
 )
 
-const shodanDataJSONPath = "data/shodan-export.json"
+const shodanDataJSONPath = "/etc/data/shodan-export.json"
 
 func (s *Client) ImportShodanData(redisClient *redis.Client) error {
 	ctx := context.Background()

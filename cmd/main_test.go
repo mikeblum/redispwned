@@ -19,15 +19,12 @@ type MainTestSuite struct {
 	log    *logrus.Entry
 }
 
-func (suite *MainTestSuite) SetupTest() {
+func (suite *MainTestSuite) SetupSuite() {
 	// use 1 in tests, 0 in production
-	suite.client = config.NewRedisClientTest()
+	cfg := config.NewConfig()
+	suite.client = config.NewRedisClientTest(cfg)
 	suite.cfg = config.NewConfig()
 	suite.log = config.NewLog()
-}
-
-func (suite *MainTestSuite) SetupSuite() {
-	suite.client = config.NewRedisClientTest()
 	// !!DANGER!! flush db before each test
 	suite.client.FlushDB(context.TODO())
 }

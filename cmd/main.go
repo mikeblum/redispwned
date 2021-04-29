@@ -49,8 +49,8 @@ func main() {
 }
 
 func loadGeoIPData(redisClient *redis.Client) error {
-	geoIPClient := geoip.NewClient()
-	return geoIPClient.ImportGeoIPData(redisClient)
+	geoIPClient := geoip.NewClient(redisClient)
+	return geoIPClient.ImportGeoIPData()
 }
 
 func loadShodanData(redisClient *redis.Client) error {
