@@ -97,14 +97,6 @@ func (cb *CityBlock) ToHSet(ctx context.Context, pipe redis.Pipeliner) {
 			Member: cb.GeonameID,
 		})
 	}
-	if cb.Network != nil {
-		if network, err := IPV4ToInt(cb.Network.IP); err == nil {
-			pipe.ZAdd(ctx, cidrRedisKey, &redis.Z{
-				Score:  float64(network),
-				Member: cb.GeonameID,
-			})
-		}
-	}
 	// The command takes arguments in the standard format x,y
 	// so the longitude must be specified before the latitude
 	// if ValidLon(cb.Longitude) && ValidLat(cb.Latitude) {
@@ -169,12 +161,6 @@ func (cb *CountryBlock) ToHSet(ctx context.Context, pipe redis.Pipeliner) {
 	if broadcast, err := IPV4ToInt(cb.Broadcast); err == nil {
 		pipe.ZAdd(ctx, cidrRedisKey, &redis.Z{
 			Score:  float64(broadcast),
-			Member: cb.GeonameID,
-		})
-	}
-	if network, err := IPV4ToInt(cb.Network.IP); err == nil {
-		pipe.ZAdd(ctx, cidrRedisKey, &redis.Z{
-			Score:  float64(network),
 			Member: cb.GeonameID,
 		})
 	}

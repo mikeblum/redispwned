@@ -38,7 +38,7 @@ func TestClientTestSuite(t *testing.T) {
 
 func (suite *ClientTestSuite) TestLookupIP() {
 	assert := asserts.New(suite.T())
-	results, err := suite.client.LookupIP(net.ParseIP("8.8.8.8"))
+	results, err := suite.client.LookupIP(net.ParseIP("24.12.177.15"))
 	assert.Nil(err)
 	assert.True(len(results) > 0)
 }

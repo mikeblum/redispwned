@@ -33,8 +33,19 @@ func (geo *Client) LookupIP(ip net.IP) (result []string, err error) {
 		Min:    zrange,
 		Max:    plusInf,
 		Offset: 0,
-		Count:  5,
+		Count:  1,
 	})
+	result, err = cmd.Result()
+	if err != nil {
+		return nil, err
+	}
+	geo.log.Debug(result)
+	return
+}
+
+func (geo *Client) LookupGeo(geoname string) (result map[string]string, err error) {
+	ctx := context.Background()
+	cmd := geo.client.HGetAll(ctx, "geo:"+geoname)
 	result, err = cmd.Result()
 	if err != nil {
 		return nil, err
