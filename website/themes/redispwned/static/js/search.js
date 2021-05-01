@@ -13,7 +13,7 @@ function formSubmit(event) {
     toggleHide(el);
     el = document.getElementById("redis-report-running");
     toggleShow(el);
-    fetch("http://localhost:8080/scan/" + document.getElementById("redis-addr").value, {
+    fetch("https://api.redispwned.app/scan/" + document.getElementById("redis-addr").value, {
         method : "POST",
         headers: {
             "Content-Type": 'application/json',
@@ -41,7 +41,7 @@ function formSubmit(event) {
 }
 
 function fetchCsrf() {
-    fetch("http://localhost:8080/csrf", {
+    fetch("https://api.redispwned.app/csrf", {
         method : "GET",
     }).then(
         response => response.json()

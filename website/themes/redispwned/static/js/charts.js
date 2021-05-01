@@ -5,7 +5,7 @@ document.addEventListener("DOMContentLoaded", function(event) {
 
 function serversByCountry() {
     var request = new XMLHttpRequest();
-    request.open('GET', 'http://localhost:8080/v1/servers-by-country', true);
+    request.open('GET', 'https://api.redispwned.app/v1/servers-by-country', true);
 
     request.onload = function() {
         if (this.status >= 200 && this.status < 400) {
@@ -48,7 +48,7 @@ function serversByCountry() {
 
 function serversByVersion() {
     var request = new XMLHttpRequest();
-    request.open('GET', 'http://localhost:8080/v1/servers-by-version', true);
+    request.open('GET', 'https://api.redispwned.app/v1/servers-by-version', true);
 
     request.onload = function() {
         if (this.status >= 200 && this.status < 400) {
