@@ -19,7 +19,8 @@ func Routes(router *gin.Engine) {
 }
 
 func CheckCSRFToken(ctx context.Context, conn *redis.Client, csrfToken string) error {
-	_, err := conn.Get(ctx, csrfRedisKey+csrfToken).Result()
+	redisKey := csrfRedisKey + csrfToken
+	_, err := conn.Get(ctx, redisKey).Result()
 	return err
 }
 
