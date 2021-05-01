@@ -12550,3 +12550,9 @@ a {
   color: #212529; }
   a:hover {
     color: #6c757d; }
+
+.show {
+  transition: opacity 400ms; }
+
+.hide {
+  opacity: 0; }

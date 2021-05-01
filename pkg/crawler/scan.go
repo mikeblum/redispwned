@@ -10,7 +10,7 @@ import (
 const moduleType = "redis"
 const scannerName = "redis"
 const defaultRedisPort uint = 6379
-const defaultTimeoutSeconds int = 30 // seconds
+const defaultTimeoutSeconds int = 10 // seconds
 
 type RedisScanner struct {
 	*zredis.Scanner

@@ -16,6 +16,36 @@
   </div>
 
   <div class="container col-xxl-8 px-4 py-5">
+    <div id="redis-report-running" class="fa-3x text-center hide">
+      <i class="fas fa-spinner fa-spin"></i>
+    </div>
+    <div id="redis-report-done" class="callout callout-info hide" role="callout">
+      <h4 class="alert-heading">Redis Server Report</h4>
+      <table class="table">
+        <tr>
+          <td>City</td>
+          <td id="redis-report-city">-</td>
+        </tr>
+        <tr>
+          <td>Country</td>
+          <td id="redis-report-country">-</td>
+        </tr>
+        <tr>
+          <td>PING</td>
+          <td id="redis-report-ping"></td>
+        </tr>
+        <tr>
+          <td>INFO</td>
+          <td id="redis-report-info"></td>
+        </tr>
+      </table>
+    </div>
+    <div id="redis-report-error" class="alert alert-warning hide" role="alert">
+      Redis Report Timed Out!
+    </div>
+</div>
+
+  <div class="container col-xxl-8 px-4 py-5">
     <div class="row flex-lg-row-reverse align-items-center g-5 py-5">
       <div class="col-10 col-sm-8 col-lg-6">
           <div class="card border-light mb-3">

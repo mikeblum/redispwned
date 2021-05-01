@@ -7,6 +7,12 @@ function formSubmit(event) {
     if (document.getElementById("redis-addr").value === "") {
         return;
     }
+    let el = document.getElementById("redis-report-done");
+    toggleHide(el);
+    el = document.getElementById("redis-report-error");
+    toggleHide(el);
+    el = document.getElementById("redis-report-running");
+    toggleShow(el);
     fetch("http://localhost:8080/scan/" + document.getElementById("redis-addr").value, {
         method : "POST",
         headers: {
@@ -16,8 +22,22 @@ function formSubmit(event) {
     }).then(
         response => response.json()
     ).then(
-        json => console.log(json)
-    );
+        json => {
+            document.getElementById("redis-report-city").innerText = json.city
+            document.getElementById("redis-report-country").innerText = json.country_code
+            document.getElementById("redis-report-info").innerText = json.info.info_response
+            document.getElementById("redis-report-ping").innerText = json.info.ping_response
+            let el = document.getElementById("redis-report-running");
+            toggleHide(el);
+            el = document.getElementById("redis-report-done");
+            toggleShow(el);
+        }
+    ).catch((error) => {
+        let el = document.getElementById("redis-report-running");
+        toggleHide(el);
+        el = document.getElementById("redis-report-error");
+        toggleShow(el);
+    });
 }
 
 function fetchCsrf() {
@@ -34,4 +54,14 @@ function attachFormSubmitEvent(formId){
     // fetch a CSRF token
     fetchCsrf();
     document.getElementById(formId).addEventListener("submit", formSubmit);
+}
+
+function toggleShow(el) {
+    el.classList.add('show');
+    el.classList.remove('hide');
+}
+
+function toggleHide(el) {
+    el.classList.add('hide');
+    el.classList.remove('show');
 }
