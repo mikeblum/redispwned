@@ -7,6 +7,7 @@ import (
 	"github.com/mikeblum/redispwned/api/geoip"
 	"github.com/mikeblum/redispwned/api/ping"
 	"github.com/mikeblum/redispwned/api/report"
+	"github.com/mikeblum/redispwned/api/scan"
 	config "github.com/mikeblum/redispwned/internal/configs"
 )
 
@@ -17,6 +18,7 @@ func main() {
 	ping.Routes(router)
 	report.Routes(router)
 	geoip.Routes(router)
+	scan.Routes(router)
 	err := router.Run() // listen and serve on 0.0.0.0:8080
 	if err != nil {
 		log.Fatal("Failed to start router: ", err)

@@ -10,7 +10,7 @@ import (
 const moduleType = "redis"
 const scannerName = "redis"
 const defaultRedisPort uint = 6379
-const defaultTimeoutSeconds int = 10 // seconds
+const defaultTimeoutSeconds int = 30 // seconds
 
 type RedisScanner struct {
 	*zredis.Scanner
@@ -23,8 +23,11 @@ func (rs *RedisScanner) RedisPort() *uint {
 
 // https://github.com/zmap/zgrab2/blob/master/modules/redis.go
 func NewScanner() (*RedisScanner, error) {
-	zredis.RegisterModule()
-	mod := zgrab2.GetModule(moduleType).(*zredis.Module)
+	var mod zgrab2.ScanModule
+	if mod = zgrab2.GetModule(moduleType); mod == nil {
+		zredis.RegisterModule()
+		mod = zgrab2.GetModule(moduleType).(*zredis.Module)
+	}
 	scan := mod.NewScanner().(*zredis.Scanner)
 	// configure flags
 	flags := mod.NewFlags().(*zredis.Flags)

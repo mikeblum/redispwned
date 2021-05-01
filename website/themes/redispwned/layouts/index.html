@@ -8,10 +8,10 @@
     <p class="display-5">Is My Redis Exposed To The Internet?</p>
   </div>
   <div class="container">
-      <form class="d-flex">
-          <input class="form-control form-control-lg me-2" type="search" placeholder="Redis Address (ex. 127.0.0.1:6379)" aria-label="Search">
+      <form class="d-flex" action="" type="POST" id="redis-search">
+          <input class="form-control form-control-lg me-2" type="search" id="redis-addr" placeholder="Redis Address (ex. 127.0.0.1:6379)" aria-label="Search">
           <button class="btn btn-outline-success" type="submit">Search</button>
-        </form>
+      </form>
   </div>
 
   <div class="container col-xxl-8 px-4 py-5">
@@ -37,5 +37,7 @@
     {{ partial "charts" . }}
   </div>
 </main>
+
+<script src="js/search.js"></script>
 
 {{ partial "footer" . }}

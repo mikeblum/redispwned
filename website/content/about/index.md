@@ -52,7 +52,9 @@ RedisPwned uses data from a number of sources to scan the internet for publicly 
 
 RedisPwned is an open-source project that:
 
-#### Runs on ![Hugo](/images/hugo.svg)
+#### Runs on ![Redis](/images/redis.svg) [of course ;)]
+
+#### Built with ![Hugo](/images/hugo.svg)
 
 #### Hosted by ![Amazon Web Services (AWS)](/images/aws.svg)
 
@@ -62,4 +64,4 @@ RedisPwned is an open-source project that:
 
 This product includes GeoLite2 data created by MaxMind, available from [http://www.maxmind.com](http://www.maxmind.com)
 
-As well as data from [Censys.io](https://censys.io/) and [Shodan.io](https://shodan.io/) respectively.
+As well as data from [Censys.io](https://censys.io/), [Rapid7](https://opendata.rapid7.com/), and [Shodan.io](https://shodan.io/) respectively.
