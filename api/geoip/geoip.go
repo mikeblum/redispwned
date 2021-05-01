@@ -27,7 +27,7 @@ func geoIP(c *gin.Context) {
 		})
 	} else {
 		c.JSON(http.StatusInternalServerError, gin.H{
-			"message": "failed",
+			"status": "failed",
 		})
 	}
 }

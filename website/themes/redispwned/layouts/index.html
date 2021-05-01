@@ -9,7 +9,8 @@
   </div>
   <div class="container">
       <form class="d-flex" action="" type="POST" id="redis-search">
-          <input class="form-control form-control-lg me-2" type="search" id="redis-addr" placeholder="Redis Address (ex. 127.0.0.1:6379)" aria-label="Search">
+          <input class="form-control form-control-lg me-2" type="search" id="redis-addr" name="redis-addr" placeholder="Redis Address (ex. 127.0.0.1:6379)" aria-label="Search">
+          <input type="hidden" id="_csrf" name="_csrf" />
           <button class="btn btn-outline-success" type="submit">Search</button>
       </form>
   </div>

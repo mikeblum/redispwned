@@ -8,14 +8,18 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/mikeblum/redispwned/api"
+	"github.com/mikeblum/redispwned/api/csrf"
 	"github.com/mikeblum/redispwned/internal/geoip"
 	"github.com/mikeblum/redispwned/pkg/crawler"
 	"github.com/zmap/zgrab2"
 )
 
+const scanner = "scanner"
+const csrfHeader = "X-CSRF"
+
 func Middleware(scan *crawler.RedisScanner) gin.HandlerFunc {
 	return func(c *gin.Context) {
-		c.Set("scanner", scan)
+		c.Set(scanner, scan)
 		c.Next()
 	}
 }
@@ -28,11 +32,21 @@ func Routes(router *gin.Engine) {
 }
 
 func scanRedis(c *gin.Context) {
-	conn, _ := api.NewRedisConn()
+	conn, ctx := api.NewRedisConn()
+	// check _csrf header
+	csrfToken := c.GetHeader(csrfHeader)
+	if err := csrf.CheckCSRFToken(ctx, conn, csrfToken); err != nil {
+		handleErr(c)
+		return
+	}
 	client := geoip.NewClient(conn)
 	redisAddr := c.Param("redisAddr")
 	parts := strings.Split(redisAddr, ":")
 	ipv4 := net.ParseIP(parts[0])
+	if ipv4 == nil {
+		handleErr(c)
+		return
+	}
 	port := 6379
 	if len(parts) > 1 {
 		port, _ = strconv.Atoi(parts[1])
@@ -43,7 +57,7 @@ func scanRedis(c *gin.Context) {
 		handleErr(c)
 		return
 	}
-	scanner, _ := c.MustGet("scanner").(*crawler.RedisScanner)
+	scanner, _ := c.MustGet(scanner).(*crawler.RedisScanner)
 	if err != nil {
 		handleErr(c)
 		return
@@ -68,6 +82,6 @@ func scanRedis(c *gin.Context) {
 
 func handleErr(c *gin.Context) {
 	c.JSON(http.StatusInternalServerError, gin.H{
-		"message": "failed",
+		"status": "failed",
 	})
 }

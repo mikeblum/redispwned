@@ -3,18 +3,35 @@ document.addEventListener("DOMContentLoaded", function(event) {
 }, {once: true});
 
 function formSubmit(event) {
-    console.log(document.getElementById("redis-addr").value)
+    event.preventDefault();
+    if (document.getElementById("redis-addr").value === "") {
+        return;
+    }
     fetch("http://localhost:8080/scan/" + document.getElementById("redis-addr").value, {
         method : "POST",
+        headers: {
+            "Content-Type": 'application/json',
+            "X-CSRF": document.getElementById("_csrf").value
+        },
     }).then(
         response => response.json()
     ).then(
         json => console.log(json)
     );
-    event.preventDefault();
 }
 
+function fetchCsrf() {
+    fetch("http://localhost:8080/csrf", {
+        method : "GET",
+    }).then(
+        response => response.json()
+    ).then(
+        json => document.getElementById("_csrf").value = json.token
+    );
+}
 
 function attachFormSubmitEvent(formId){
+    // fetch a CSRF token
+    fetchCsrf();
     document.getElementById(formId).addEventListener("submit", formSubmit);
 }

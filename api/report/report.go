@@ -23,7 +23,7 @@ func serversByCountry(c *gin.Context) {
 	results, err := idx.ServersByCountry()
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
-			"message": "failed",
+			"status": "failed",
 		})
 	}
 	report := &Report{}
@@ -39,7 +39,7 @@ func serversByVersion(c *gin.Context) {
 	results, err := idx.ServersByVersion()
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
-			"message": "failed",
+			"tatus": "failed",
 		})
 	}
 	report := &Report{}

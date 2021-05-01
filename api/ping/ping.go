@@ -17,11 +17,11 @@ func healthCheck(c *gin.Context) {
 	conn, ctx := api.NewRedisConn()
 	if pong, err := conn.Ping(ctx).Result(); err == nil {
 		c.JSON(http.StatusOK, gin.H{
-			"message": pong,
+			"status": pong,
 		})
 	} else {
 		c.JSON(http.StatusInternalServerError, gin.H{
-			"message": "failed",
+			"staus": "failed",
 		})
 	}
 }
