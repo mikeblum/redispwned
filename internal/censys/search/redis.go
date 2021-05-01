@@ -11,7 +11,7 @@ import (
 
 const endpointSearchIPV4 = "search/ipv4"
 
-const queryRedis = `protocols: "6379/redis" OR tags.raw: "redis"`
+const queryRedis = `location.country_code: US and protocols: "6379/redis"`
 
 // RedisQuery - page: API will return the first page of results. One indexed.
 func RedisQuery(c *censys.Client, page int) (*Response, error) {
