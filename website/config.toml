@@ -5,3 +5,15 @@ title = "Have I Been Redised"
 theme = "redispwned"
 enableEmoji = true
 enableRobotsTXT = true
+
+# pygments
+PygmentsCodeFences = true
+PygmentsStyle = "pygments"
+
+# [module]
+#   [[module.imports]]
+#     path = "github.com/mikeblum/redispwned-theme"
+
+[params]
+  author = "Michael Blum"
+  keywords = ["redis", "redis labs", "hackathon", "2021"]
