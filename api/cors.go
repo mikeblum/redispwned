@@ -9,7 +9,7 @@ import (
 
 func CORS(router *gin.Engine) {
 	router.Use(cors.New(cors.Config{
-		AllowOrigins:  []string{"http://localhost:1313", "https://haveibeenredised.com", "https://redispwned.app"},
+		AllowOrigins:  []string{"http://localhost:1313", "https://haveibeenredised.com", "https://redispwned.app", "https://www.redispwned.app"},
 		AllowMethods:  []string{"GET", "POST", "OPTIONS"},
 		AllowHeaders:  []string{"Content-Type", "Origin", "X-CSRF"},
 		ExposeHeaders: []string{"Content-Length"},
