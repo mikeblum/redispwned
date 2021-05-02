@@ -11,7 +11,6 @@ PygmentsCodeFences = true
 PygmentsStyle = "pygments"
 
 [module]
-  replacements = "github.com/mikeblum/redis-pwned-theme -> ../.."
   [[module.imports]]
     path = "github.com/mikeblum/redispwned-theme"
 
