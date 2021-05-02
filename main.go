@@ -1,6 +1,10 @@
 package main
 
 import (
+	"net/http"
+	"os"
+	"strings"
+
 	"github.com/gin-gonic/gin"
 
 	"github.com/mikeblum/redispwned/api"
@@ -12,7 +16,13 @@ import (
 	config "github.com/mikeblum/redispwned/internal/configs"
 )
 
+const envGinMode = "GIN_MODE"
+const envCertFile = "CERT_FILE"
+const envCertKey = "CERT_KEY"
+const modeRelease = "release"
+
 func main() {
+	cfg := config.NewConfig()
 	log := config.NewLog()
 	router := gin.Default()
 	api.CORS(router)
@@ -21,8 +31,27 @@ func main() {
 	report.Routes(router)
 	geoip.Routes(router)
 	scan.Routes(router)
-	err := router.Run() // listen and serve on 0.0.0.0:8080
+	var err error
+	if mode, ok := os.LookupEnv(envGinMode); ok {
+		if strings.EqualFold(mode, modeRelease) {
+			err = runRelease(router, cfg)
+		}
+	} else {
+		err = runLocal(router)
+	}
 	if err != nil {
 		log.Fatal("Failed to start router: ", err)
 	}
+}
+
+func runRelease(router *gin.Engine, cfg *config.AppConfig) error {
+	server := http.Server{
+		Addr:    "0.0.0.0:443",
+		Handler: router,
+	}
+	return server.ListenAndServeTLS(cfg.GetString(envCertFile), cfg.GetString(envCertKey))
+}
+
+func runLocal(router *gin.Engine) error {
+	return router.Run() // listen and serve on 0.0.0.0:8080
 }
