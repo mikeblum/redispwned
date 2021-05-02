@@ -56,7 +56,7 @@ RedisPwned is an open-source project that:
 
 #### Built with ![Hugo](/images/hugo.svg)
 
-#### Hosted by ![Amazon Web Services (AWS)](/images/aws.svg)
+#### Hosted by ![Cloudflare](/images/cloudflare.svg) <i class="fa fa-plus"></i> ![AWS](/images/aws.svg)
 
 #### Secured by ![Let's Encrypt](/images/letsencrypt.svg)
 
