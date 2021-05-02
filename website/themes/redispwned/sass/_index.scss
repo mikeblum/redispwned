@@ -24,8 +24,10 @@ a {
 
 .show {
     transition: opacity 400ms;
+    display: block;
 }
 
 .hide {
     opacity: 0;
+    display: none;
 }

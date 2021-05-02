@@ -12552,7 +12552,9 @@ a {
     color: #6c757d; }
 
 .show {
-  transition: opacity 400ms; }
+  transition: opacity 400ms;
+  display: block; }
 
 .hide {
-  opacity: 0; }
+  opacity: 0;
+  display: none; }

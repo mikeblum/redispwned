@@ -7,7 +7,9 @@ function formSubmit(event) {
     if (document.getElementById("redis-addr").value === "") {
         return;
     }
-    let el = document.getElementById("redis-report-done");
+    let el = document.getElementById("redis-report");
+    toggleShow(el);
+    el = document.getElementById("redis-report-done");
     toggleHide(el);
     el = document.getElementById("redis-report-error");
     toggleHide(el);
@@ -20,8 +22,18 @@ function formSubmit(event) {
             "X-CSRF": document.getElementById("_csrf").value
         },
     }).then(
-        response => response.json()
-    ).then(
+        response => {
+            if (!response.ok) {
+                throw new Error('Scan failed');
+            }
+            return response.json()
+        }
+    ).catch((error) => {
+        let el = document.getElementById("redis-report-running");
+        toggleHide(el);
+        el = document.getElementById("redis-report-error");
+        toggleShow(el);
+    }).then(
         json => {
             document.getElementById("redis-report-city").innerText = json.city
             document.getElementById("redis-report-country").innerText = json.country_code
@@ -32,12 +44,7 @@ function formSubmit(event) {
             el = document.getElementById("redis-report-done");
             toggleShow(el);
         }
-    ).catch((error) => {
-        let el = document.getElementById("redis-report-running");
-        toggleHide(el);
-        el = document.getElementById("redis-report-error");
-        toggleShow(el);
-    });
+    );
 }
 
 function fetchCsrf() {

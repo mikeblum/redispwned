@@ -3,3 +3,6 @@ data
 function.zip
 main
 public
+dist
+*.min.js
+*.min.css
