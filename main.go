@@ -1,9 +1,11 @@
 package main
 
 import (
+	"fmt"
 	"net/http"
 	"os"
 	"strings"
+	"time"
 
 	"github.com/gin-gonic/gin"
 
@@ -25,6 +27,7 @@ func main() {
 	cfg := config.NewConfig()
 	log := config.NewLog()
 	router := gin.Default()
+	configureLogging(router)
 	api.CORS(router)
 	csrf.Routes(router)
 	ping.Routes(router)
@@ -53,5 +56,22 @@ func runRelease(router *gin.Engine, cfg *config.AppConfig) error {
 }
 
 func runLocal(router *gin.Engine) error {
-	return router.Run() // listen and serve on 0.0.0.0:8080
+	return router.Run() // default to 0.0.0.0:8080
+}
+
+func configureLogging(router *gin.Engine) {
+	router.Use(gin.LoggerWithFormatter(func(param gin.LogFormatterParams) string {
+		return fmt.Sprintf("%s - [%s] \"%s %s %s %d %s \"%s\" %s\"\n",
+			param.ClientIP,
+			param.TimeStamp.Format(time.RFC1123),
+			param.Method,
+			param.Path,
+			param.Request.Proto,
+			param.StatusCode,
+			param.Latency,
+			param.Request.UserAgent(),
+			param.ErrorMessage,
+		)
+	}))
+	router.Use(gin.Recovery())
 }

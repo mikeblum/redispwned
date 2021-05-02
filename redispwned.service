@@ -1,0 +1,28 @@
+[Unit]
+Description=RedisPwned service
+ConditionPathExists=/var/app/redispwned
+After=network.target
+
+[Service]
+Type=simple
+User=redis
+Group=redis
+LimitNOFILE=1024
+
+Restart=on-failure
+RestartSec=10
+startLimitIntervalSec=60
+
+WorkingDirectory=/var/app/redispwned
+ExecStart=/usr/local/bin/redispwned
+
+PermissionsStartOnly=true
+ExecStartPre=/bin/mkdir -p /var/log/redispwned
+ExecStartPre=/bin/chown syslog:adm /var/log/redispwned
+ExecStartPre=/bin/chmod 755 /var/log/redispwned
+StandardOutput=syslog
+StandardError=syslog
+SyslogIdentifier=redispwned
+
+[Install]
+WantedBy=multi-user.target

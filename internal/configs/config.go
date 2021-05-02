@@ -28,6 +28,8 @@ func NewConfig() *AppConfig {
 	config.AddConfigPath("..")
 	config.AddConfigPath("../..")
 	config.AddConfigPath("../../..")
+	config.AddConfigPath("/var/app/redispwned")
+	config.AddConfigPath("/home/redis/.secrets/redispwned")
 	config.AutomaticEnv()
 	_ = config.ReadInConfig()
 	return &AppConfig{
