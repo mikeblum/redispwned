@@ -1,0 +1,3 @@
+website/themes/redispwned/static/css/*      linguist-vendored
+website/themes/redispwned/static/webfonts/* linguist-vendored
+website/themes/redispwned/sass/vendor/*     linguist-vendored
