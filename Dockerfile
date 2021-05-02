@@ -11,4 +11,6 @@ FROM gcr.io/distroless/base AS runtime
 
 COPY --from=build /go/bin/app /
 
+RUN mkdir -p /etc/certs
+
 CMD ["/app"]
