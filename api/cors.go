@@ -20,6 +20,6 @@ func CORS(router *gin.Engine) {
 		AllowMethods:  []string{"GET", "POST", "OPTIONS"},
 		AllowHeaders:  []string{"Content-Type", "Origin", "X-CSRF"},
 		ExposeHeaders: []string{"Content-Length"},
-		MaxAge:        12 * time.Hour,
+		MaxAge:        time.Hour,
 	}))
 }
