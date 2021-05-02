@@ -10,9 +10,9 @@ enableRobotsTXT = true
 PygmentsCodeFences = true
 PygmentsStyle = "pygments"
 
-[module]
-  [[module.imports]]
-    path = "github.com/mikeblum/redispwned-theme"
+# [module]
+#   [[module.imports]]
+#     path = "github.com/mikeblum/redispwned-theme"
 
 [params]
   author = "Michael Blum"
