@@ -1,0 +1,24 @@
+{
+    "app_name": "RedisPwned",  //Name of the app
+    "description": "Inspired by Have I Been Pwned for Making Redis more secure on the internet", // One line description
+    "hidden": false, // Can be "true" or "false". If true, this app won't show up in Marketplace.
+    "rank": 100, // This is used to sort the apps in the marketplace. 1 to 20 are reserved. Enter greater than 20
+    "type": "Full App", //Can be "Building Block" or "Full App"
+    "contributed_by": "Community", // Can be "Redis Labs" or "Community" or "Partner"
+    "repo_url": "https://github.com/mikeblum/redispwned", //This is the Gitub Repo's URL.
+    "download_url": "",
+    "hosted_url": "https://redispwned.app", //The URL of the app. if you are hosting this app somewhere
+    "quick_deploy": "false", //"frue" if the project has Heroku, Vercel, Google deploy buttons
+    "deploy_buttons": [],
+    "language": ["Go"], // Backend technologies: "JavaScript", "Java", "Python", "Go", "C#", "Ruby", "PHP", etc.
+    "redis_commands": ["REDIS.AGGREGATE"], // Enter all the Redis commands
+    "redis_features": ["caching"],// Enter any core Redis feature or leave it blank.
+    "redis_modules": ["RediSearch"], //Value can be one or more of "RediJSON", "RediSearch", "RedisTimeseries", "RedisAI"  "RedisGears" or "RedisGraph" listed in an array.
+    "app_image_urls": [
+        "https://raw.githubusercontent.com/mikeblum/redispwned/redis-marketplace/website/static/images/website.png?raw=true"
+    ], // RAW image urls
+    "youtube_url": "", //Provide a Youtube link to your app's video
+    "special_tags": ["Hackathon"],
+    "verticals": ["InfoSec"],
+    "markdown": "https://raw.githubusercontent.com/mikeblum/redispwned/main/README.md", // Link to the RAW Markdown.
+}
